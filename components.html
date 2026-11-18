@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>공통 컴포넌트 | Ewha SafeMeal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <style>
+    /* 이 페이지(미리보기) 전용 스타일 */
+    .demo { padding: 24px 0; border-top: 1px solid var(--color-border); }
+    .demo:first-of-type { border-top: 0; }
+    .demo > h2 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .demo > code { display: block; margin-bottom: 16px; font-size: 13px; color: var(--color-text-3); }
+    .demo-box { max-width: 640px; }
+    .demo-row { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+  </style>
+</head>
+<body>
+  <main class="page container">
+    <div class="page-head">
+      <h1 class="page-title">공통 컴포넌트</h1>
+      <p class="page-desc">각 페이지에서 쓰는 UI 부품 모음입니다. 사용법은 js/ui.js 주석과 docs/components.md를 참고하세요. 창 너비를 768px 아래로 줄이면 모바일 모양을 볼 수 있어요.</p>
+    </div>
+
+    <section class="demo">
+      <h2>세그먼트 · 날짜 선택</h2>
+      <code>UI.segmented({...}) · UI.dateStrip({...})</code>
+      <div class="demo-row" id="demo-controls"></div>
+      <p class="text-sm text-muted" id="demo-event-log" style="margin-top:12px">이벤트: -</p>
+    </section>
+
+    <section class="demo">
+      <h2>판정 배지 · 범례</h2>
+      <code>UI.statusLegend() · UI.statusBadge('may', { detail: '대두' }) · UI.statusBadge('contains', { count: 1 })</code>
+      <div class="stack" id="demo-status"></div>
+    </section>
+
+    <section class="demo">
+      <h2>성분 태그 · 칩</h2>
+      <code>UI.allergenTag(10, 'confirmed') · UI.allergenTag(5, 'may', { mine: true }) · UI.allergenTag(6, 'may-other') · UI.chip('⑤ 대두')</code>
+      <div class="cluster" id="demo-tags"></div>
+    </section>
+
+    <section class="demo">
+      <h2>끼니 카드 · 메뉴 한 줄 (메뉴를 누르면 상세 시트가 열려요)</h2>
+      <code>UI.mealCard({ title, items }) · UI.menuItem({...})</code>
+      <div class="meal-grid" id="demo-meals"></div>
+    </section>
+
+    <section class="demo">
+      <h2>안내 박스</h2>
+      <code>UI.callout({ variant: 'info' | 'warn' | 'danger' | 'brand' | 'note', ... })</code>
+      <div class="stack" id="demo-callouts"></div>
+    </section>
+
+    <section class="demo">
+      <h2>버튼</h2>
+      <code>UI.button({ label, variant: 'primary' | 'secondary' | 'danger', icon, size, block })</code>
+      <div class="cluster" id="demo-buttons"></div>
+    </section>
+
+    <section class="demo">
+      <h2>알레르기 선택 타일</h2>
+      <code>UI.checkGrid([5, 9])</code>
+      <div class="demo-box" id="demo-checks"></div>
+    </section>
+
+    <section class="demo">
+      <h2>시트 (모달 / 바텀시트 / 패널)</h2>
+      <code>UI.openSheet({ meta, title, body, actions, footnote, variant })</code>
+      <div class="cluster" id="demo-sheets"></div>
+    </section>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="js/constants.js"></script>
+  <script src="js/ui.js"></script>
+  <script>
+    UI.mountLayout({ active: 'menu' });
+    UI.setHeaderAllergens([5, 9]);
+    const $ = (id) => document.getElementById(id);
+
+    // 세그먼트 · 날짜
+    $('demo-controls').innerHTML =
+      UI.segmented({
+        name: 'cafeteria', value: 'jinsunmi', label: '식당 선택',
+        options: SM.CAFETERIAS.map((c) => ({ value: c.id, label: c.name })),
+      }) +
+      UI.segmented({
+        name: 'meal', value: 'lunch', label: '끼니 선택',
+        options: [{ value: 'lunch', label: '중식' }, { value: 'dinner', label: '석식' }],
+      }) +
+      UI.dateStrip({
+        selected: '2026-11-04',
+        days: [
+          { date: '2026-11-02', dow: '월', day: 2, hasData: true },
+          { date: '2026-11-03', dow: '화', day: 3, hasData: true },
+          { date: '2026-11-04', dow: '수', day: 4, hasData: true },
+          { date: '2026-11-05', dow: '목', day: 5, hasData: false },
+          { date: '2026-11-06', dow: '금', day: 6, hasData: false },
+          { date: '2026-11-07', dow: '토', day: 7, hasData: false },
+        ],
+      });
+    ['sm:segment', 'sm:date', 'sm:week'].forEach((name) =>
+      document.addEventListener(name, (e) => { $('demo-event-log').textContent = `이벤트: ${name} ${JSON.stringify(e.detail)}`; })
+    );
+
+    // 배지
+    $('demo-status').innerHTML =
+      UI.statusLegend() +
+      `<div class="cluster">${UI.statusBadge('contains', { detail: '대두' })}${UI.statusBadge('may', { detail: '새우' })}${UI.statusBadge('contains', { count: 1 })}${UI.statusBadge('unknown', { count: 2 })}</div>`;
+
+    // 태그 · 칩
+    $('demo-tags').innerHTML =
+      UI.allergenTag(10, 'confirmed') + UI.allergenTag(5, 'may', { mine: true }) + UI.allergenTag(6, 'may-other') +
+      UI.chip('⑤ 대두') + UI.chip('진선미관');
+
+    // 끼니 카드 (Figma 01 화면 예시 데이터)
+    const lunch = [
+      { id: 'l1', name: '잡곡밥', desc: '쌀, 기장 · 모든 재료 판정됨', status: 'clear' },
+      { id: 'l2', name: '돈육짜장덮밥', desc: '확정 ⑤⑥⑩', status: 'contains', statusDetail: '대두' },
+      { id: 'l3', name: '짬뽕국', desc: '확정 ⑱ · 가능 ⑬ · 죽순 확인 필요', status: 'unknown' },
+      { id: 'l4', name: '꿔바로우', desc: '확정 ⑩ · 가능 ⑤⑥', status: 'may', statusDetail: '대두' },
+      { id: 'l5', name: '배추김치', desc: '가능 ⑨ · 새우젓 확인 필요', status: 'may', statusDetail: '새우' },
+    ];
+    const dinner = [
+      { id: 'd1', name: '잡곡밥', desc: '쌀 · 모든 재료 판정됨', status: 'clear' },
+      { id: 'd2', name: '청국장찌개', desc: '확정 ⑤ · 가능 ⑥', status: 'contains', statusDetail: '대두' },
+      { id: 'd3', name: '숭늉', desc: '성분표에 연결된 메뉴 없음', status: 'unknown' },
+    ];
+    $('demo-meals').innerHTML = UI.mealCard({ title: '중식', items: lunch }) + UI.mealCard({ title: '석식', items: dinner });
+
+    // 메뉴 클릭 → 상세 시트 (실제 내용은 장은서 님 상세 페이지에서)
+    document.addEventListener('click', (e) => {
+      const item = e.target.closest('[data-menu-id]');
+      if (!item) return;
+      const name = item.querySelector('.menu-item__name').textContent;
+      UI.openSheet({
+        meta: ['진선미관', '11월 4일 (수) 중식'],
+        title: name,
+        body:
+          UI.callout({ variant: 'warn', title: '대두가 들어 있을 수 있어요', text: '냉동꿔바로우 제품의 원재료를 확인하지 못해 ‘포함 가능’으로 표시합니다.' }) +
+          `<div><p class="section-label">내 알레르기 판정</p>
+            ${UI.judgeRow({ allergenId: 5, desc: '포함 가능 목록에 있음', status: 'may' })}
+            ${UI.judgeRow({ allergenId: 9, desc: '목록에는 없지만 가공품 확인 전', status: 'unknown' })}
+          </div>` +
+          `<div><p class="section-label">성분</p>
+            ${UI.tagRow('확정', UI.allergenTag(10, 'confirmed'))}
+            ${UI.tagRow('포함 가능', UI.allergenTag(5, 'may', { mine: true }) + UI.allergenTag(6, 'may-other'))}
+          </div>` +
+          `<div>${UI.infoRow('확인 필요 재료', '냉동꿔바로우 (가공품)')}${UI.infoRow('출처', '진선미관 조리계획서 기반 팀 판정 · 영양사 검토 전')}${UI.infoRow('자료 받은 날', '2026-11-03')}</div>`,
+        actions:
+          UI.button({ label: '학교 식단 페이지', icon: 'external-link', href: '#' }) +
+          UI.button({ label: '닫기', variant: 'primary', attrs: { 'data-sheet-close': true } }),
+        footnote: '‘확인된 충돌 없음’을 포함해 어떤 표시도 알레르기 안전을 보장하지 않습니다. 심한 알레르기가 있다면 드시기 전 식당에 확인하세요.',
+      });
+    });
+
+    // 안내 박스
+    $('demo-callouts').innerHTML =
+      UI.callout({ variant: 'brand', title: '내 알레르기를 설정하면 메뉴마다 포함 여부를 알려드려요', text: '식약처 표시 대상 19종 중에서 고르면 됩니다. 로그인 없이 이 기기 브라우저에만 저장됩니다.', action: UI.button({ label: '알레르기 설정하기', variant: 'primary', icon: 'sliders', attrs: { 'data-open-settings': true } }) }) +
+      UI.callout({ variant: 'info', title: '출처 · 진선미관 조리계획서를 바탕으로 팀이 판정한 자료 (영양사 검토 전)', text: '자료 받은 날 2026-11-03 · ‘확인된 충돌 없음’도 안전을 보장하지는 않습니다.' }) +
+      UI.callout({ variant: 'warn', title: '설정을 저장하지 못했어요', text: '시크릿 모드이거나 브라우저 저장이 막혀 있습니다. 이번 방문 동안만 적용됩니다.' }) +
+      UI.callout({ variant: 'danger', title: '대두가 들어 있어요', text: '춘장(⑤ 대두) 재료 자체가 표시 대상입니다.' }) +
+      UI.callout({ variant: 'note', html: true, text: '로그인 없이 <b>이 기기의 이 브라우저에만</b> 저장됩니다. 다른 기기에서는 다시 설정해야 해요.' });
+
+    // 버튼
+    $('demo-buttons').innerHTML =
+      UI.button({ label: '저장하기', variant: 'primary', size: 'lg' }) +
+      UI.button({ label: '전체 삭제', variant: 'danger', icon: 'trash', size: 'lg' }) +
+      UI.button({ label: '학교 식단 페이지', icon: 'external-link' }) +
+      UI.button({ label: '설정', icon: 'sliders' }) +
+      UI.iconButton({ icon: 'close', label: '닫기' });
+
+    // 체크 타일
+    $('demo-checks').innerHTML = UI.checkGrid([5, 9]);
+
+    // 시트
+    $('demo-sheets').innerHTML =
+      UI.button({ label: '모달 열기', attrs: { id: 'open-modal' } }) +
+      UI.button({ label: '설정 패널 열기', attrs: { id: 'open-panel' } });
+    $('open-modal').addEventListener('click', () =>
+      UI.openSheet({ meta: ['진선미관'], title: '모달 예시', body: '<p>모바일에서는 아래에서 올라오는 바텀시트로 바뀌어요.</p>',
+        actions: UI.button({ label: '닫기', variant: 'primary', attrs: { 'data-sheet-close': true } }) })
+    );
+    const openPanel = () =>
+      UI.openSheet({
+        variant: 'panel', title: '내 알레르기 설정',
+        body: `<p class="page-desc">식약처 표시 대상 19종 중 피해야 하는 성분을 고르세요.</p>${UI.checkGrid([5, 9])}`,
+        actions: UI.button({ label: '전체 삭제', variant: 'danger', icon: 'trash', size: 'lg' }) +
+                 UI.button({ label: '저장하기', variant: 'primary', size: 'lg', attrs: { 'data-sheet-close': true, style: 'flex:1' } }),
+      });
+    $('open-panel').addEventListener('click', openPanel);
+    document.addEventListener('sm:open-settings', openPanel);
+  </script>
+</body>
+</html>
