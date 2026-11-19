@@ -1,0 +1,76 @@
+/* =========================================================
+   SafeMeal 디자인 토큰 (Figma: Ewha-SafeMeal-UI 기준)
+   - 색상/글꼴/모서리/간격은 여기 값만 쓰고, 페이지 CSS에 hex를 직접 쓰지 마세요.
+   ========================================================= */
+:root {
+  /* 브랜드 */
+  --color-brand: #00462a;
+  --color-brand-soft: #e6efea;
+  --color-brand-border: #b7cfc2;
+
+  /* 배경/면 */
+  --color-bg: #f6f7f4;
+  --color-surface: #ffffff;
+  --color-surface-sub: #fbfcfa;
+  --color-overlay: rgba(21, 33, 27, 0.6);
+
+  /* 선 */
+  --color-border: #dde2dc;
+  --color-border-strong: #c9d0c9;
+  --color-divider: #e9ece7;
+  --color-control: #9aa39d;      /* 체크박스 테두리 */
+
+  /* 글자 */
+  --color-text: #15211b;
+  --color-text-2: #3d4741;
+  --color-text-3: #5b6660;
+
+  /* 판정 상태 4가지 (포함 / 포함 가능 / 정보 부족 / 확인된 충돌 없음) */
+  --status-contains-bg: #fdecec;
+  --status-contains-border: #f3b8b8;
+  --status-contains-fg: #a4161a;
+
+  --status-may-bg: #fff1e0;
+  --status-may-border: #f2c08a;
+  --status-may-fg: #8a4500;
+
+  --status-unknown-bg: #eef0ee;
+  --status-unknown-border: #c9d0c9;
+  --status-unknown-fg: #4a544e;
+
+  --status-clear-bg: #e7f4ec;
+  --status-clear-border: #b5dcc3;
+  --status-clear-fg: #1b6b3a;
+
+  /* 안내 박스 */
+  --callout-info-bg: #eef4fb;
+  --callout-info-border: #c9daf0;
+  --callout-info-fg: #2b5a9e;
+  --callout-warn-bg: #fff7ec;
+  --callout-warn-border: #f2d3a8;
+  --callout-danger-border-soft: #e7b3b3; /* 위험 버튼 테두리 */
+
+  /* 글꼴 */
+  --font-sans: "Noto Sans KR", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif;
+
+  /* 모서리 */
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-pill: 999px;
+
+  /* 레이아웃 */
+  --container: 1216px;
+  --gutter: 24px;
+  --header-h: 72px;
+  --tabbar-h: 70px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --gutter: 16px;
+    --header-h: 65px;
+  }
+}
