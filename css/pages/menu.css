@@ -31,6 +31,11 @@
   color: var(--color-text-3);
 }
 
+/* 범례(포함 / 포함 가능 / …)와 아래 카드 사이 간격 (Figma 03: 24px) */
+.menu-legend {
+  margin-bottom: 24px;
+}
+
 /* 휴대폰(768px 이하): 날짜 띠가 화면 폭을 다 쓰게 (공통 CSS와 같은 기준) */
 @media (max-width: 768px) {
   .menu-head__dates {

@@ -176,6 +176,51 @@
     return days;
   }
 
+  // ================= 메뉴 한 줄 만들기 =================
+
+  // [바꾸기 표] 비교 기계의 판정(level) → 화면 스티커 이름(status)
+  const LEVEL_TO_STATUS = {
+    danger: 'contains', // 🔴 포함
+    caution: 'may',     // 🟠 포함 가능
+    unknown: 'unknown', // ⚪ 정보 부족
+    ok: 'clear',        // 🟢 확인된 충돌 없음
+  };
+
+  // [메뉴 1] 알레르기 목록 → "⑤⑥⑮" 같은 동그라미 숫자 글자
+  function circledList(list) {
+    return list.map((a) => SM.circled(a.no)).join('');
+  }
+
+  // [메뉴 2] 메뉴 이름 아래 작은 설명줄 만들기
+  // 예: "확정 ⑤⑥⑩ · 영양사 제공 (학식 기준)", "가능 ⑤⑥⑮ · 표준 레시피 기준 추정"
+  function buildDesc(result) {
+    const parts = [];
+    if (result.allergens.length > 0) {
+      parts.push('확정 ' + circledList(result.allergens));
+    }
+    if (result.possibleFromName.length > 0) {
+      parts.push('가능 ' + circledList(result.possibleFromName));
+    }
+    if (result.status === 'none_estimated') {
+      parts.push('주요 19종 추정 불가');
+    }
+    parts.push(result.sourceLabel); // 출처는 항상 맨 끝에 (안전 규칙 2번)
+    return parts.join(' · ');
+  }
+
+  // [메뉴 3] 메뉴 이름 하나 → UI.menuItem이 원하는 모양으로 바꾸기
+  function toMenuItem(menuName, index) {
+    const result = mockFind(menuName);                   // 찾기 기계
+    const check = mockCheckMenu(result, MY_ALLERGIES);   // 비교 기계
+    return {
+      id: state.date + '-' + index,                      // 메뉴 구분 번호 (상세 화면 연결용, 장은서님과 맞출 예정)
+      name: menuName,                                    // "제육볶음"
+      desc: buildDesc(result),                           // 설명줄
+      status: LEVEL_TO_STATUS[check.level],              // 스티커 종류
+      statusDetail: check.hits.map((a) => a.name).join(', '), // 스티커 옆 "대두"
+    };
+  }
+
   // ================= 화면 그리기 =================
 
   // [그리기 1] 식당 선택 버튼 (진선미관 / 신공학관)
@@ -200,18 +245,26 @@
     });
   }
 
-  // [그리기 3] 본문 (임시 글자 → 6·7단계에서 메뉴 카드 / 빈 상태로 바꿀 예정)
+  // [그리기 3] 메뉴 영역: 범례 + 끼니 카드 (Figma 03)
+  function renderMenus() {
+    const day = MOCK_WEEKLY.days.find((d) => d.date === state.date); // 고른 날짜의 메뉴판 한 줄
+    const items = day.menus.map(toMenuItem);                         // 메뉴 이름들 → 메뉴 한 줄 모양들
+    return `
+      <div class="menu-legend">${UI.statusLegend()}</div>
+      <div class="meal-grid">
+        ${UI.mealCard({ title: day.meal, items: items })}
+      </div>`;
+  }
+
+  // [그리기 4] 본문: 상황에 따라 세 갈래 중 하나
   function renderBody() {
-    const cafe = SM.CAFETERIAS.find((c) => c.id === state.cafeteria);
-    let message;
     if (state.cafeteria !== 'engineering') {
-      message = '준비 중 화면이 나올 예정';
+      bodySlot.innerHTML = '<p>준비 중 화면이 나올 예정 (7단계)</p>';
     } else if (hasMenuOn(state.date)) {
-      message = '여기에 메뉴 카드가 나올 예정';
+      bodySlot.innerHTML = renderMenus();
     } else {
-      message = '자료 없음 화면이 나올 예정';
+      bodySlot.innerHTML = '<p>자료 없음 화면이 나올 예정 (7단계)</p>';
     }
-    bodySlot.innerHTML = `<p>${UI.esc(cafe.name)} · ${UI.esc(state.date)} → ${UI.esc(message)}</p>`;
   }
 
   // [신호 받기 1] 식당 버튼을 누르면 → 메모장 고치기 → 본문 다시 그리기
@@ -233,21 +286,5 @@
   renderDates();
   renderBody();
 
-  // 3단계 확인용: 이번 주 모든 메뉴를 기계에 넣어 보고 표로 보여 주기 (확인 끝나면 지울 예정)
-  const testRows = [];
-  MOCK_WEEKLY.days.forEach((day) => {
-    day.menus.forEach((menuName) => {
-      const result = mockFind(menuName);
-      const check = mockCheckMenu(result, MY_ALLERGIES);
-      testRows.push({
-        날짜: day.date,
-        메뉴: menuName,
-        판정: check.level,
-        걸린것: check.hits.map((a) => a.name).join(', '),
-        출처: result.sourceLabel,
-      });
-    });
-  });
-  console.table(testRows);
 
 })();
