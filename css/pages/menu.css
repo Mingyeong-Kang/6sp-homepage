@@ -3,3 +3,8 @@
  * 담당: 이수빈
  * 규칙: 색은 hex 대신 css/tokens.css 의 토큰 사용 (예: var(--color-brand))
  */
+
+/* 식당 선택 버튼과 아래 날짜 제목 사이 간격 (Figma 03: 12px) */
+.menu-cafeteria {
+  margin-bottom: 12px;
+}
