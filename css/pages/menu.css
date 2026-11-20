@@ -8,3 +8,32 @@
 .menu-cafeteria {
   margin-bottom: 12px;
 }
+
+/* 제목 줄: 왼쪽 날짜 제목, 오른쪽 날짜 띠 (좁은 화면에선 아래로 줄바꿈) */
+.menu-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+/* "11월 20일 (금)" 옆에 작은 글씨 "2026년 11월 16일 주" */
+.menu-head__title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.menu-head__week {
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--color-text-3);
+}
+
+/* 휴대폰(768px 이하): 날짜 띠가 화면 폭을 다 쓰게 (공통 CSS와 같은 기준) */
+@media (max-width: 768px) {
+  .menu-head__dates {
+    width: 100%;
+  }
+}

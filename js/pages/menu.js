@@ -6,13 +6,21 @@
 (function () {
   'use strict';
 
+  // ---- Day.js 준비: 한국어로 바꾸고, 주(week) 계산 플러그인 끼우기 ----
+  dayjs.locale('ko');
+  dayjs.extend(window.dayjs_plugin_isoWeek);
+
   // ---- 화면의 빈 자리 (index.html에 만들어 둔 곳) ----
   const cafeteriaSlot = document.getElementById('menu-cafeteria'); // 식당 버튼 자리
+  const titleSlot = document.getElementById('menu-title');         // 큰 날짜 제목 자리
+  const weekSlot = document.getElementById('menu-week');           // "○월 ○일 주" 자리
+  const datesSlot = document.getElementById('menu-dates');         // 날짜 띠 자리
   const bodySlot = document.getElementById('menu-body');           // 본문 자리
 
   // ---- 메모장: 지금 사용자가 무엇을 골랐는지 기억 ----
   const state = {
-    cafeteria: 'engineering', // 처음엔 신공학관 (진선미관은 준비 중)
+    cafeteria: 'engineering',  // 처음엔 신공학관 (진선미관은 준비 중)
+    date: getDefaultDate(),    // 처음엔 오늘 (주말이면 다음 월요일)
   };
 
   // 이번 주 메뉴 mock (채은님 weekly-menu.json 형식과 같게)
@@ -132,6 +140,42 @@
     return { level: 'ok', hits: [] };
   }
 
+  // ================= 날짜 계산 (Day.js) =================
+
+  // [날짜 1] 처음 보여 줄 날짜: 오늘. 토요일이면 +2일, 일요일이면 +1일 → 다음 월요일
+  function getDefaultDate() {
+    const today = dayjs();
+    if (today.day() === 6) return today.add(2, 'day').format('YYYY-MM-DD');
+    if (today.day() === 0) return today.add(1, 'day').format('YYYY-MM-DD');
+    return today.format('YYYY-MM-DD');
+  }
+
+  // [날짜 2] 그 날짜에 메뉴가 있나? (메뉴판에서 같은 날짜를 찾아봄)
+  function hasMenuOn(date) {
+    return MOCK_WEEKLY.days.some((d) => d.date === date && d.menus.length > 0);
+  }
+
+  // [날짜 3] 고른 날짜가 들어 있는 주의 월요일
+  function getMonday(date) {
+    return dayjs(date).isoWeekday(1);
+  }
+
+  // [날짜 4] 날짜 띠에 넣을 월~금 5칸 만들기
+  function buildWeekDays(date) {
+    const monday = getMonday(date);
+    const days = [];
+    for (let i = 0; i < 5; i++) {
+      const d = monday.add(i, 'day');
+      days.push({
+        date: d.format('YYYY-MM-DD'), // "2026-11-16"
+        dow: d.format('dd'),          // "월"
+        day: d.date(),                // 16
+        hasData: hasMenuOn(d.format('YYYY-MM-DD')),
+      });
+    }
+    return days;
+  }
+
   // ================= 화면 그리기 =================
 
   // [그리기 1] 식당 선택 버튼 (진선미관 / 신공학관)
@@ -144,25 +188,49 @@
     });
   }
 
-  // [그리기 2] 본문 (4단계: 임시로 고른 식당 이름만 보여 줌 → 6·7단계에서 메뉴 카드로 바꿀 예정)
-  function renderBody() {
-    const cafe = SM.CAFETERIAS.find((c) => c.id === state.cafeteria);
-    if (state.cafeteria === 'engineering') {
-      bodySlot.innerHTML = `<p>선택한 식당: <b>${UI.esc(cafe.name)}</b> (여기에 메뉴 카드가 나올 예정)</p>`;
-    } else {
-      bodySlot.innerHTML = `<p>선택한 식당: <b>${UI.esc(cafe.name)}</b> (준비 중 화면이 나올 예정)</p>`;
-    }
+  // [그리기 2] 큰 날짜 제목 + "○월 ○일 주" + 날짜 띠
+  function renderDates() {
+    titleSlot.textContent = dayjs(state.date).format('M월 D일 (dd)');          // "11월 20일 (금)"
+    weekSlot.textContent = getMonday(state.date).format('YYYY년 M월 D일 주');  // "2026년 11월 16일 주"
+    datesSlot.innerHTML = UI.dateStrip({
+      days: buildWeekDays(state.date),
+      selected: state.date,
+      canPrev: false, // 이전·다음 주 화살표는 다음 단계에서 켤 예정 (지금은 회색으로 꺼 둠)
+      canNext: false,
+    });
   }
 
-  // [신호 받기] 식당 버튼을 누르면 → 메모장 고치기 → 본문 다시 그리기
+  // [그리기 3] 본문 (임시 글자 → 6·7단계에서 메뉴 카드 / 빈 상태로 바꿀 예정)
+  function renderBody() {
+    const cafe = SM.CAFETERIAS.find((c) => c.id === state.cafeteria);
+    let message;
+    if (state.cafeteria !== 'engineering') {
+      message = '준비 중 화면이 나올 예정';
+    } else if (hasMenuOn(state.date)) {
+      message = '여기에 메뉴 카드가 나올 예정';
+    } else {
+      message = '자료 없음 화면이 나올 예정';
+    }
+    bodySlot.innerHTML = `<p>${UI.esc(cafe.name)} · ${UI.esc(state.date)} → ${UI.esc(message)}</p>`;
+  }
+
+  // [신호 받기 1] 식당 버튼을 누르면 → 메모장 고치기 → 본문 다시 그리기
   cafeteriaSlot.addEventListener('sm:segment', (e) => {
     if (e.detail.name !== 'cafeteria') return; // 다른 세그먼트 신호면 무시
     state.cafeteria = e.detail.value;
     renderBody();
   });
 
+  // [신호 받기 2] 날짜 칸을 누르면 → 메모장 고치기 → 날짜·본문 다시 그리기
+  datesSlot.addEventListener('sm:date', (e) => {
+    state.date = e.detail.date;
+    renderDates();
+    renderBody();
+  });
+
   // [처음 한 번] 페이지가 열리면 그리기
   renderCafeteria();
+  renderDates();
   renderBody();
 
   // 3단계 확인용: 이번 주 모든 메뉴를 기계에 넣어 보고 표로 보여 주기 (확인 끝나면 지울 예정)

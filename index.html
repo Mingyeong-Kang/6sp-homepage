@@ -18,8 +18,12 @@
   <main class="page container" id="app">
     <!-- 식단 화면 자리 (이수빈, 내용은 js/pages/menu.js가 채움) -->
     <div id="menu-cafeteria" class="menu-cafeteria"></div>
-    <div class="page-head">
-      <h1 class="page-title">식단</h1>
+    <div class="page-head menu-head">
+      <div class="menu-head__title">
+        <h1 class="page-title" id="menu-title">식단</h1>
+        <span class="menu-head__week" id="menu-week"></span>
+      </div>
+      <div id="menu-dates" class="menu-head__dates"></div>
     </div>
     <div id="menu-body"></div>
   </main>
@@ -28,6 +32,10 @@
   <script src="js/constants.js"></script>
   <script src="js/ui.js"></script>
   <script>UI.mountLayout({ active: 'menu' });</script>
+  <!-- 오픈소스 Day.js (MIT): 날짜 계산. 순서 중요 → 본체 → 한국어 → 플러그인 → menu.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.13/dayjs.min.js" integrity="sha384-DpVxUeeBWjUvUV1czyIHJAjh+jYUZFu2lLakbdua5vbwOrBGi1UgaKCHjTC+x3Ky" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.13/locale/ko.min.js" integrity="sha384-usFS55ttLXutWNoa2g9gL3WTa819uX8ZGBpEl+q736JfRvdfU2MnYumW4hBEOXRe" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.13/plugin/isoWeek.min.js" integrity="sha384-6KcmFPpsJxHl41x5aO/xJFk+crPzEDZBCeiNgzl2oBOGPyVuCYYwUI1CSxFEHKTa" crossorigin="anonymous"></script>
   <!-- 식단 화면 전용 JS (이수빈) -->
   <script src="js/pages/menu.js"></script>
 </body>
