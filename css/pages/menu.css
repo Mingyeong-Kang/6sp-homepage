@@ -1,0 +1,98 @@
+/*
+ * 식단 목록 화면 (Figma 03) + 자료 없음 화면 (Figma 04) 전용 스타일
+ * 담당: 이수빈
+ * 규칙: 색은 hex 대신 css/tokens.css 의 토큰 사용 (예: var(--color-brand))
+ */
+
+/* 식당 선택 버튼과 아래 날짜 제목 사이 간격 (Figma 03: 12px) */
+.menu-cafeteria {
+  margin-bottom: 12px;
+}
+
+/* 제목 줄: 왼쪽 날짜 제목, 오른쪽 날짜 띠 (좁은 화면에선 아래로 줄바꿈) */
+.menu-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+/* "11월 20일 (금)" 옆에 작은 글씨 "2026년 11월 16일 주" */
+.menu-head__title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.menu-head__week {
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--color-text-3);
+}
+
+/* 범례(포함 / 포함 가능 / …)와 아래 카드 사이 간격 (Figma 03: 24px) */
+.menu-legend {
+  margin-bottom: 24px;
+}
+
+/* ---------- 빈 상태 점선 박스 (Figma 04) ---------- */
+.menu-empty {
+  display: flex;
+  flex-direction: column;   /* 위에서 아래로 쌓기 */
+  align-items: center;      /* 가운데 정렬 */
+  padding: 64px 24px;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-2xl);
+  background: var(--color-surface);
+  text-align: center;
+}
+
+.menu-empty__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-xl);
+  background: var(--color-bg);
+  color: var(--color-text-2);
+}
+
+.menu-empty__title {
+  margin-top: 14px;
+  font-size: 22px;
+  line-height: 33px;
+  font-weight: 700;
+}
+
+.menu-empty__text {
+  max-width: 522px;
+  margin-top: 16px;
+  font-size: 15px;
+  line-height: 22.5px;
+  color: var(--color-text-2);
+  word-break: keep-all; /* 한국어를 단어 중간에서 자르지 않기 */
+}
+
+.menu-empty__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.menu-empty__hint {
+  margin-top: 16px;
+  font-size: 13px;
+  line-height: 19.5px;
+  color: var(--color-text-3);
+}
+
+/* 휴대폰(768px 이하): 날짜 띠가 화면 폭을 다 쓰게 (공통 CSS와 같은 기준) */
+@media (max-width: 768px) {
+  .menu-head__dates {
+    width: 100%;
+  }
+}
