@@ -155,6 +155,14 @@
     return MOCK_WEEKLY.days.some((d) => d.date === date && d.menus.length > 0);
   }
 
+  // [날짜 2-1] 메뉴가 있는 날짜들만 모아서 순서대로 (예: ['2026-11-16', …, '2026-11-19'])
+  function getDataDates() {
+    return MOCK_WEEKLY.days
+      .filter((d) => d.menus.length > 0)
+      .map((d) => d.date)
+      .sort();
+  }
+
   // [날짜 3] 고른 날짜가 들어 있는 주의 월요일
   function getMonday(date) {
     return dayjs(date).isoWeekday(1);
@@ -256,14 +264,57 @@
       </div>`;
   }
 
-  // [그리기 4] 본문: 상황에 따라 세 갈래 중 하나
+  // [빈 상태 틀] 점선 박스 (Figma 04). 공통 컴포넌트에 없어서 직접 만듦
+  // textHtml은 내가 만든 문장만 넣기 (메뉴 이름 같은 외부 글자는 UI.esc 거쳐서)
+  function emptyState({ icon, title, textHtml, actions, hint }) {
+    return `
+      <section class="menu-empty">
+        <div class="menu-empty__icon">${UI.icon(icon, 30)}</div>
+        <h2 class="menu-empty__title">${UI.esc(title)}</h2>
+        <p class="menu-empty__text">${textHtml}</p>
+        <div class="menu-empty__actions">${actions}</div>
+      </section>
+      <p class="menu-empty__hint">${UI.esc(hint)}</p>`;
+  }
+
+  // [그리기 4] 메뉴 없는 날 (Figma 04)
+  function renderNoData() {
+    const dates = getDataDates();
+    const last = dates[dates.length - 1];  // 가장 마지막 자료 날짜
+    const lastText = dayjs(last).format('M월 D일 (dd)');
+    return emptyState({
+      icon: 'calendar', // TODO: 민경님이 calendar-x 추가하면 바꾸기
+      title: '이 날짜는 자료를 확보하지 못했습니다',
+      textHtml: `SafeMeal은 영양사님께 받은 자료가 있는 날짜만 보여드려요. 신공학관의 마지막 자료는 <b>${UI.esc(lastText)}</b>입니다.`,
+      actions:
+        UI.button({ label: dayjs(last).format('M월 D일') + ' 식단 보기', variant: 'primary', icon: 'calendar', attrs: { 'data-goto-date': last } }) +
+        UI.button({ label: '메뉴 이름으로 찾기', icon: 'search', href: 'search.html' }),
+      hint: '날짜 아래 점(•)이 있는 날만 자료가 있습니다. 신공학관 자료 기간: ' +
+        dayjs(dates[0]).format('YYYY년 M월 D일') + ' ~ ' + dayjs(last).format('M월 D일'),
+    });
+  }
+
+  // [그리기 5] 진선미관 준비 중 (04와 같은 틀, 문구만 다름)
+  function renderPreparing() {
+    return emptyState({
+      icon: 'info', // TODO: 민경님이 construction 추가하면 바꾸기
+      title: '진선미관 자료는 준비 중입니다',
+      textHtml: '지금은 신공학관 식단만 제공해요. 진선미관은 영양사님 자료를 받으면 추가할 예정이에요.',
+      actions:
+        UI.button({ label: '신공학관 식단 보기', variant: 'primary', icon: 'calendar', attrs: { 'data-goto-cafeteria': 'engineering' } }) +
+        UI.button({ label: '메뉴 이름으로 찾기', icon: 'search', href: 'search.html' }),
+      hint: '진선미관 메뉴는 메뉴 검색에서도 아직 나오지 않을 수 있어요.',
+    });
+  }
+
+  // [그리기 6] 본문: 상황에 따라 세 갈래 중 하나
   function renderBody() {
     if (state.cafeteria !== 'engineering') {
-      bodySlot.innerHTML = '<p>준비 중 화면이 나올 예정 (7단계)</p>';
+      bodySlot.innerHTML = renderPreparing();
     } else if (hasMenuOn(state.date)) {
       bodySlot.innerHTML = renderMenus();
     } else {
-      bodySlot.innerHTML = '<p>자료 없음 화면이 나올 예정 (7단계)</p>';
+      bodySlot.innerHTML = renderNoData();
     }
   }
 
@@ -279,6 +330,23 @@
     state.date = e.detail.date;
     renderDates();
     renderBody();
+  });
+
+  // [신호 받기 3] 빈 상태 박스 안 버튼 누르기
+  bodySlot.addEventListener('click', (e) => {
+    const gotoDate = e.target.closest('[data-goto-date]');           // "○월 ○일 식단 보기"
+    if (gotoDate) {
+      state.date = gotoDate.dataset.gotoDate;
+      renderDates();
+      renderBody();
+      return;
+    }
+    const gotoCafe = e.target.closest('[data-goto-cafeteria]');      // "신공학관 식단 보기"
+    if (gotoCafe) {
+      state.cafeteria = gotoCafe.dataset.gotoCafeteria;
+      renderCafeteria(); // 위쪽 식당 버튼 색도 바꿔야 하니까 다시 그리기
+      renderBody();
+    }
   });
 
   // [처음 한 번] 페이지가 열리면 그리기
