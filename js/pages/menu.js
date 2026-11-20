@@ -248,8 +248,8 @@
     datesSlot.innerHTML = UI.dateStrip({
       days: buildWeekDays(state.date),
       selected: state.date,
-      canPrev: false, // 이전·다음 주 화살표는 다음 단계에서 켤 예정 (지금은 회색으로 꺼 둠)
-      canNext: false,
+      canPrev: true, // 이전 주 화살표 켜기
+      canNext: true, // 다음 주 화살표 켜기
     });
   }
 
@@ -328,6 +328,14 @@
   // [신호 받기 2] 날짜 칸을 누르면 → 메모장 고치기 → 날짜·본문 다시 그리기
   datesSlot.addEventListener('sm:date', (e) => {
     state.date = e.detail.date;
+    renderDates();
+    renderBody();
+  });
+
+  // [신호 받기 2-1] 이전·다음 주 화살표 → 같은 요일로 한 주 이동
+  // e.detail.dir: 이전 주면 -1, 다음 주면 1
+  datesSlot.addEventListener('sm:week', (e) => {
+    state.date = dayjs(state.date).add(e.detail.dir, 'week').format('YYYY-MM-DD');
     renderDates();
     renderBody();
   });
