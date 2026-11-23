@@ -1,0 +1,879 @@
+{
+  "source": "이화여대 신공학관 학생식당 영양사 제공 알레르기 성분표",
+  "note": "주요 식재료 기준으로 작성된 자료로, 가공식품·소스·양념에 든 성분은 빠져 있을 수 있습니다. 알레르기가 표시되지 않았다고 해서 해당 성분이 없다는 뜻은 아닙니다.",
+  "generated_at": "2026-11-12 21:44 (KST)",
+  "count": 58,
+  "menus": [
+    {
+      "name": "뼈없는 갈비탕",
+      "category": "중식",
+      "dates": [
+        "10/26"
+      ],
+      "allergens": [
+        "대두",
+        "밀",
+        "쇠고기"
+      ],
+      "status": "ok",
+      "note": "우잡뼈·갈비탕육수·손만두 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "파채너비아니",
+      "category": "중식",
+      "dates": [
+        "10/26"
+      ],
+      "allergens": [
+        "난류",
+        "대두",
+        "밀",
+        "돼지고기",
+        "쇠고기"
+      ],
+      "status": "ok",
+      "note": "너비아니 제품 육류·밀·대두·난류 등 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "들기름막국수",
+      "category": "중식",
+      "dates": [
+        "10/26"
+      ],
+      "allergens": [
+        "메밀",
+        "대두",
+        "밀"
+      ],
+      "status": "ok",
+      "note": "막국수 면 메밀 함유 여부, 모밀장 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "궁채장아찌무침",
+      "category": "중식",
+      "dates": [
+        "10/26"
+      ],
+      "allergens": [
+        "대두",
+        "밀"
+      ],
+      "status": "ok",
+      "note": "궁채절임 원재료 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "버섯채소비빔밥",
+      "category": "중식",
+      "dates": [
+        "10/27"
+      ],
+      "allergens": [
+        "대두",
+        "밀"
+      ],
+      "status": "ok",
+      "note": "고추장 대두·밀, 참기름 등 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "사골파국",
+      "category": "중식",
+      "dates": [
+        "10/27"
+      ],
+      "allergens": [
+        "쇠고기"
+      ],
+      "status": "ok",
+      "note": "사골육수 제품 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "소세지케찹볶음",
+      "category": "중식",
+      "dates": [
+        "10/27"
+      ],
+      "allergens": [
+        "대두",
+        "밀",
+        "돼지고기",
+        "토마토"
+      ],
+      "status": "ok",
+      "note": "소시지 제품의 돼지고기·밀·대두 등 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "카레춘권·칠리소스",
+      "category": "중식",
+      "dates": [
+        "10/27"
+      ],
+      "allergens": [
+        "대두",
+        "밀"
+      ],
+      "status": "ok",
+      "note": "춘권·칠리소스 원재료 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "후르츠칵테일샐러드",
+      "category": "중식",
+      "dates": [
+        "10/27"
+      ],
+      "allergens": [
+        "우유"
+      ],
+      "status": "ok",
+      "note": "후르츠칵테일 제품·키위드레싱 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "숯불맛매콤제육볶음",
+      "category": "중식",
+      "dates": [
+        "10/28"
+      ],
+      "allergens": [
+        "대두",
+        "밀",
+        "돼지고기",
+        "조개류"
+      ],
+      "status": "ok",
+      "note": "숯불갈비맛소스·간장·굴소스 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "콩가루배춧국",
+      "category": "중식",
+      "dates": [
+        "10/28"
+      ],
+      "allergens": [
+        "대두",
+        "밀"
+      ],
+      "status": "ok",
+      "note": "판두부·된장·조미료 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "호박버섯볶음",
+      "category": "중식",
+      "dates": [
+        "10/28"
+      ],
+      "allergens": [
+        "새우"
+      ],
+      "status": "ok",
+      "note": "새송이·호박 등, 새우 원재료 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "숙주나물무침",
+      "category": "중식",
+      "dates": [
+        "10/28"
+      ],
+      "allergens": [],
+      "status": "none_estimated",
+      "note": "양념 기준 추정; 조미료 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "순살감자탕",
+      "category": "중식",
+      "dates": [
+        "10/29"
+      ],
+      "allergens": [
+        "대두",
+        "밀",
+        "돼지고기"
+      ],
+      "status": "ok",
+      "note": "들깨가루·된장 등 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "돈육모듬장조림",
+      "category": "중식",
+      "dates": [
+        "10/29"
+      ],
+      "allergens": [
+        "난류",
+        "대두",
+        "밀",
+        "돼지고기"
+      ],
+      "status": "ok",
+      "note": "간장·어묵·메추리알 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "탕평채",
+      "category": "중식",
+      "dates": [
+        "10/29"
+      ],
+      "allergens": [
+        "난류"
+      ],
+      "status": "ok",
+      "note": "청포묵·지단채 제품 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "천사채마요샐러드",
+      "category": "중식",
+      "dates": [
+        "10/29"
+      ],
+      "allergens": [
+        "난류"
+      ],
+      "status": "ok",
+      "note": "마요네즈·천사채 제품 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "김밥볶음밥",
+      "category": "중식",
+      "dates": [
+        "10/30"
+      ],
+      "allergens": [
+        "난류",
+        "대두",
+        "밀",
+        "돼지고기"
+      ],
+      "status": "ok",
+      "note": "알밥단무지·햄 등 가공식품 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "사각어묵국",
+      "category": "중식",
+      "dates": [
+        "10/30"
+      ],
+      "allergens": [
+        "대두",
+        "밀"
+      ],
+      "status": "ok",
+      "note": "어묵 생선·밀·대두 등 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "베이컨볶음우동",
+      "category": "중식",
+      "dates": [
+        "10/30"
+      ],
+      "allergens": [
+        "대두",
+        "밀",
+        "돼지고기"
+      ],
+      "status": "ok",
+      "note": "일반 급식용 제품·양념 기준 추정",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "어니언링·타르타르소스",
+      "category": "중식",
+      "dates": [
+        "10/30"
+      ],
+      "allergens": [
+        "난류",
+        "대두",
+        "밀"
+      ],
+      "status": "ok",
+      "note": "어니언링 튀김옷·타르타르 제품 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "소고기우거지탕",
+      "category": "중식",
+      "dates": [
+        "11/02"
+      ],
+      "allergens": [
+        "대두",
+        "밀",
+        "쇠고기"
+      ],
+      "status": "ok",
+      "note": "갈비탕육수·우삽겹 제품 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "햄브로콜리볶음",
+      "category": "중식",
+      "dates": [
+        "11/02"
+      ],
+      "allergens": [
+        "대두",
+        "밀",
+        "돼지고기"
+      ],
+      "status": "ok",
+      "note": "양념 기준 추정; 스모크햄 제품 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "닭가슴살냉채",
+      "category": "중식",
+      "dates": [
+        "11/02"
+      ],
+      "allergens": [
+        "대두",
+        "밀",
+        "닭고기"
+      ],
+      "status": "ok",
+      "note": "겨자·소스 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "청경채무침",
+      "category": "중식",
+      "dates": [
+        "11/02"
+      ],
+      "allergens": [],
+      "status": "none_estimated",
+      "note": "조미료 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "마파두부덮밥",
+      "category": "중식",
+      "dates": [
+        "11/03"
+      ],
+      "allergens": [
+        "난류",
+        "대두",
+        "밀",
+        "돼지고기",
+        "조개류"
+      ],
+      "status": "ok",
+      "note": "두반장·굴소스·그린콩 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "가쓰오우동장국",
+      "category": "중식",
+      "dates": [
+        "11/03"
+      ],
+      "allergens": [
+        "대두",
+        "밀"
+      ],
+      "status": "ok",
+      "note": "우동소스·건더기스프 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "맛동산탕수육",
+      "category": "중식",
+      "dates": [
+        "11/03"
+      ],
+      "allergens": [
+        "땅콩",
+        "대두",
+        "밀",
+        "돼지고기"
+      ],
+      "status": "ok",
+      "note": "탕수육 제품·땅콩분태 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "멕시칸샐러드",
+      "category": "중식",
+      "dates": [
+        "11/03"
+      ],
+      "allergens": [
+        "난류",
+        "대두",
+        "돼지고기"
+      ],
+      "status": "ok",
+      "note": "스모크햄·마요네즈 제품 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "반달단무지무침",
+      "category": "중식",
+      "dates": [
+        "11/03"
+      ],
+      "allergens": [],
+      "status": "none_estimated",
+      "note": "단무지 제품 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "묵은지순살찜닭",
+      "category": "중식",
+      "dates": [
+        "11/04"
+      ],
+      "allergens": [
+        "대두",
+        "밀",
+        "닭고기"
+      ],
+      "status": "ok",
+      "note": "떡볶이떡·김치 양념 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "미역국",
+      "category": "중식",
+      "dates": [
+        "11/04"
+      ],
+      "allergens": [],
+      "status": "none_estimated",
+      "note": "육수 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "감자고로케·케찹",
+      "category": "중식",
+      "dates": [
+        "11/04"
+      ],
+      "allergens": [
+        "우유",
+        "대두",
+        "밀",
+        "토마토"
+      ],
+      "status": "ok",
+      "note": "고로케 튀김옷·속재료 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "오이양파무침",
+      "category": "중식",
+      "dates": [
+        "11/04"
+      ],
+      "allergens": [
+        "대두",
+        "밀"
+      ],
+      "status": "ok",
+      "note": "간장·고춧가루 양념 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "모듬햄부대찌개",
+      "category": "중식",
+      "dates": [
+        "11/05"
+      ],
+      "allergens": [
+        "대두",
+        "밀",
+        "돼지고기"
+      ],
+      "status": "ok",
+      "note": "후랑크·스모크햄·스팸·라면사리·소스 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "치킨너겟·머스타드",
+      "category": "중식",
+      "dates": [
+        "11/05"
+      ],
+      "allergens": [
+        "대두",
+        "밀",
+        "닭고기"
+      ],
+      "status": "ok",
+      "note": "일반 급식용 제품·양념 기준 추정",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "고추장어묵볶음",
+      "category": "중식",
+      "dates": [
+        "11/05"
+      ],
+      "allergens": [
+        "대두",
+        "밀",
+        "조개류"
+      ],
+      "status": "ok",
+      "note": "사각어묵·간장·굴소스 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "콩나물김가루무침",
+      "category": "중식",
+      "dates": [
+        "11/05"
+      ],
+      "allergens": [],
+      "status": "none_estimated",
+      "note": "조미료 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": [
+        "메뉴 이름에 대두 관련 재료가 보이는데 성분표에는 없음 → 확인 필요"
+      ]
+    },
+    {
+      "name": "장칼국수",
+      "category": "중식",
+      "dates": [],
+      "allergens": [
+        "난류",
+        "대두",
+        "밀"
+      ],
+      "status": "ok",
+      "note": "수제비·된장·고추장·면 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "함박스테이크",
+      "category": "중식",
+      "dates": [],
+      "allergens": [
+        "난류",
+        "대두",
+        "밀",
+        "돼지고기",
+        "쇠고기"
+      ],
+      "status": "ok",
+      "note": "함박 제품·스테이크소스·우스터소스 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "케이준샐러드",
+      "category": "중식",
+      "dates": [],
+      "allergens": [
+        "난류",
+        "대두",
+        "밀",
+        "닭고기"
+      ],
+      "status": "ok",
+      "note": "케이준 드레싱 제품 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "참나물두부무침",
+      "category": "중식",
+      "dates": [],
+      "allergens": [
+        "대두"
+      ],
+      "status": "ok",
+      "note": "판두부·양념 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "쌀밥",
+      "category": "중식",
+      "dates": [],
+      "allergens": [],
+      "status": "none_estimated",
+      "note": "조리 과정 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "배추김치",
+      "category": "중식",
+      "dates": [],
+      "allergens": [
+        "새우"
+      ],
+      "status": "ok",
+      "note": "젓갈(새우 등)·김치 원재료 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "치킨마요덮밥",
+      "category": "일품",
+      "dates": [],
+      "allergens": [
+        "난류",
+        "대두",
+        "밀",
+        "닭고기"
+      ],
+      "status": "ok",
+      "note": "팝콘치킨·마요·데리야끼소스 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "돈까스",
+      "category": "일품",
+      "dates": [],
+      "allergens": [
+        "난류",
+        "대두",
+        "밀",
+        "돼지고기"
+      ],
+      "status": "ok",
+      "note": "튀김옷·돈까스소스 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "토마토파스타",
+      "category": "일품",
+      "dates": [],
+      "allergens": [
+        "난류",
+        "우유",
+        "대두",
+        "밀",
+        "돼지고기",
+        "토마토"
+      ],
+      "status": "ok",
+      "note": "돈까스 튀김옷·파마산치즈·소스 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "불고기카레우동",
+      "category": "일품",
+      "dates": [],
+      "allergens": [
+        "난류",
+        "우유",
+        "대두",
+        "밀",
+        "쇠고기"
+      ],
+      "status": "ok",
+      "note": "카레소스·메추리알·우동면 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "유니짜장면",
+      "category": "일품",
+      "dates": [],
+      "allergens": [
+        "대두",
+        "밀",
+        "새우",
+        "돼지고기"
+      ],
+      "status": "ok",
+      "note": "춘장·멘보샤(새우 가능) 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "오므라이스",
+      "category": "일품",
+      "dates": [],
+      "allergens": [
+        "난류",
+        "대두",
+        "밀",
+        "새우",
+        "돼지고기",
+        "토마토"
+      ],
+      "status": "ok",
+      "note": "새우까스·계란지단·타르타르·데미소스 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "소세지김치필라프",
+      "category": "일품",
+      "dates": [],
+      "allergens": [
+        "난류",
+        "대두",
+        "밀",
+        "돼지고기",
+        "조개류"
+      ],
+      "status": "ok",
+      "note": "소시지·굴소스·머스터드 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "마제덮밥",
+      "category": "일품",
+      "dates": [],
+      "allergens": [
+        "난류",
+        "대두",
+        "밀",
+        "돼지고기",
+        "조개류"
+      ],
+      "status": "ok",
+      "note": "굴소스·명란마요 확인",
+      "source_file": "알레르기성분표_v2.xlsx",
+      "issues": []
+    },
+    {
+      "name": "제육볶음",
+      "category": "한식",
+      "dates": [],
+      "allergens": [
+        "대두",
+        "밀",
+        "돼지고기"
+      ],
+      "status": "ok",
+      "note": "양념·고추장 등 실제 제품 확인",
+      "source_file": "알레르기성분표_v1.xlsx",
+      "issues": []
+    },
+    {
+      "name": "불고기",
+      "category": "한식",
+      "dates": [],
+      "allergens": [
+        "대두",
+        "밀",
+        "쇠고기"
+      ],
+      "status": "ok",
+      "note": "양념 제품 확인",
+      "source_file": "알레르기성분표_v1.xlsx",
+      "issues": []
+    },
+    {
+      "name": "닭볶음탕",
+      "category": "한식",
+      "dates": [],
+      "allergens": [
+        "대두",
+        "밀",
+        "닭고기"
+      ],
+      "status": "ok",
+      "note": "양념 제품 확인",
+      "source_file": "알레르기성분표_v1.xlsx",
+      "issues": []
+    },
+    {
+      "name": "부대찌개",
+      "category": "한식",
+      "dates": [],
+      "allergens": [
+        "대두",
+        "밀",
+        "돼지고기"
+      ],
+      "status": "ok",
+      "note": "햄·소시지·육수 제품 확인",
+      "source_file": "알레르기성분표_v1.xlsx",
+      "issues": []
+    },
+    {
+      "name": "설렁탕",
+      "category": "한식",
+      "dates": [],
+      "allergens": [
+        "쇠고기"
+      ],
+      "status": "ok",
+      "note": "육수·조미료 확인",
+      "source_file": "알레르기성분표_v1.xlsx",
+      "issues": []
+    },
+    {
+      "name": "갈비탕",
+      "category": "한식",
+      "dates": [],
+      "allergens": [
+        "대두",
+        "밀",
+        "쇠고기"
+      ],
+      "status": "ok",
+      "note": "육수·양념 확인",
+      "source_file": "알레르기성분표_v1.xlsx",
+      "issues": []
+    }
+  ]
+}
