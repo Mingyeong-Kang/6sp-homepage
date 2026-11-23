@@ -1,0 +1,85 @@
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-panel .sheet__title {
+  padding-right: 48px;
+  font-size: 24px;
+  line-height: 36px;
+}
+
+.settings-panel .sheet__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.settings-panel .settings-description {
+  margin-top: 4px;
+  color: var(--color-text-2);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.settings-panel .settings-note {
+  color: var(--color-text-3);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.settings-panel .settings-error {
+  color: var(--status-contains-fg);
+  font-size: 14px;
+}
+
+.settings-panel .sheet__actions {
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-divider);
+}
+
+.settings-panel .settings-note {
+  margin-bottom: 32px;
+}
+
+@media (max-width: 768px) {
+  .settings-panel .sheet__close {
+    display: block;
+  }
+
+  .settings-panel .sheet__actions {
+    position: sticky;
+    bottom: -1px;
+    padding-bottom: 8px;
+    background: var(--color-surface);
+  }
+
+  .settings-panel .sheet__actions .btn {
+    flex: initial;
+  }
+}
+#allergy-settings-notice:not(:empty) {
+  margin-bottom: 24px;
+}
+.settings-ingredient-badge {
+  flex-shrink: 0;
+  max-width: 50%;
+  padding: 5px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-bg);
+  color: var(--color-text-2);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.settings-menu-guide {
+  margin-bottom: 16px;
+  color: var(--color-text-3);
+  font-size: 13px;
+  line-height: 1.6;
+}

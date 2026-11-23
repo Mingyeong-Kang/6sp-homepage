@@ -12,11 +12,13 @@
   <link rel="stylesheet" href="css/components.css">
   <!-- 식단 화면 전용 CSS (이수빈) -->
   <link rel="stylesheet" href="css/pages/menu.css">
+  <link rel="stylesheet" href="css/pages/settings.css">
 </head>
 <body>
   <!-- 담당: 이수빈 (식단 표시) / 박서진 (설정 패널) -->
   <main class="page container" id="app">
     <!-- 식단 화면 자리 (이수빈, 내용은 js/pages/menu.js가 채움) -->
+    <div id="allergy-settings-notice"></div>
     <div id="menu-cafeteria" class="menu-cafeteria"></div>
     <div class="page-head menu-head">
       <div class="menu-head__title">
@@ -38,5 +40,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.13/plugin/isoWeek.min.js" integrity="sha384-6KcmFPpsJxHl41x5aO/xJFk+crPzEDZBCeiNgzl2oBOGPyVuCYYwUI1CSxFEHKTa" crossorigin="anonymous"></script>
   <!-- 식단 화면 전용 JS (이수빈) -->
   <script src="js/pages/menu.js"></script>
+  <script src="js/pages/settings.js"></script>
 </body>
 </html>
