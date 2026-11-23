@@ -1,25 +1,26 @@
-# 매주 식약처 Open API를 호출해 data/recipe-allergens.json(전체)과 .min.json(화면용)을 새로 만들고 저장소에 저장합니다.
-# 결과 개수가 이상하면 scripts/build_recipes.py가 실패해서 아무것도 커밋되지 않습니다.
+# main에 '리뷰 필수' 보호 규칙이 있을 때 쓰는 버전입니다.
+# 사용법: update-recipes.yml 을 지우고 이 파일 이름을 update-recipes.yml 로 바꾸세요.
+# 필요한 설정: Settings → Actions → General → Workflow permissions →
+#   "Allow GitHub Actions to create and approve pull requests" 체크
+# 매주 데이터가 바뀌면 bot/update-recipes 브랜치로 PR이 열리고, 팀원이 확인 후 merge 합니다.
 name: Update recipe allergens
 
 on:
   schedule:
-    # 매주 월요일 오전 3시(한국 시간) = 일요일 18:00 UTC
-    - cron: "0 18 * * 0"
-  workflow_dispatch: # Actions 탭에서 "Run workflow" 버튼으로 수동 실행도 가능
+    - cron: "0 18 * * 0" # 매주 월요일 03:00 KST
+  workflow_dispatch:
 
 permissions:
-  contents: write # 갱신된 JSON을 저장소에 커밋하기 위해 필요
+  contents: write
+  pull-requests: write
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - name: 저장소 가져오기
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: 파이썬 준비
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
@@ -28,14 +29,23 @@ jobs:
           FOODSAFETY_API_KEY: ${{ secrets.FOODSAFETY_API_KEY }}
         run: python scripts/build_recipes.py
 
-      - name: 바뀐 내용이 있으면 커밋
+      - name: 바뀐 내용이 있으면 PR 열기
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/recipe-allergens.json data/recipe-allergens.min.json
           if git diff --cached --quiet; then
             echo "변경 사항 없음"
-          else
-            git commit -m "chore: 레시피 알레르기 데이터 자동 갱신"
-            git push
+            exit 0
           fi
+          BRANCH=bot/update-recipes
+          git switch -c "$BRANCH"
+          git commit -m "chore: 레시피 알레르기 데이터 자동 갱신"
+          git push --force origin "$BRANCH"
+          # 이미 열린 PR이 있으면 브랜치만 갱신되고, 없으면 새로 엶
+          gh pr view "$BRANCH" --json state -q .state 2>/dev/null | grep -q OPEN \
+            || gh pr create --base main --head "$BRANCH" \
+                 --title "chore: 레시피 알레르기 데이터 자동 갱신" \
+                 --body "식약처 Open API에서 레시피를 다시 받아 만든 자동 갱신입니다. allergens 변화가 크면 확인 후 merge 해 주세요."
