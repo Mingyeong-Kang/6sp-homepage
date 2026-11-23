@@ -5,7 +5,8 @@ Ewha SafeMeal - 레시피 수집 + 알레르기 판정 스크립트
   1. 식약처(식품안전나라) '조리식품의 레시피 DB' Open API(COOKRCP01)를 호출해 레시피 전체를 받는다
   2. 레시피마다 메뉴명과 재료만 뽑아 정리한다
   3. allergen_rules.json 규칙으로 재료별 알레르기를 판정한다
-  4. 결과를 data/recipe-allergens.json 에 저장한다 (매번 새로 만들어 덮어씀)
+  4. 개수가 이상하면(0개, 일부만, 지난번보다 크게 줄어듦) 저장하지 않고 실패 처리한다
+  5. 결과를 data/recipe-allergens.json(전체)과 recipe-allergens.min.json(화면용)에 저장한다
 
 실행 방법
   python build_recipes.py
@@ -32,7 +33,12 @@ OUTPUT_PATH = BASE_DIR / "data" / "recipe-allergens.json"
 
 SERVICE_ID = "COOKRCP01"
 PAGE_SIZE = 1000  # 이 API는 한 번에 최대 1000개까지 받을 수 있음
-API_URL = "http://openapi.foodsafetykorea.go.kr/api/{key}/{service}/json/{start}/{end}"
+API_URL = "{scheme}://openapi.foodsafetykorea.go.kr/api/{key}/{service}/json/{start}/{end}"
+MIN_OUTPUT_PATH = BASE_DIR / "data" / "recipe-allergens.min.json"  # 화면용 가벼운 파일
+
+# 이상한 결과로 덮어쓰지 않기 위한 기준 (FORCE_UPDATE=1 이면 검사를 건너뜀)
+MIN_TOTAL = 100          # 이보다 적게 오면 API 이상으로 보고 중단
+MAX_DROP_RATIO = 0.10    # 지난번보다 10% 넘게 줄면 중단
 
 
 # ---------------------------------------------------------------
@@ -57,9 +63,28 @@ def load_api_key() -> str:
 # ---------------------------------------------------------------
 # 1. API 호출
 # ---------------------------------------------------------------
+SCHEME = None  # 처음 호출할 때 https가 되는지 확인해서 정함
+
+
+def pick_scheme(key: str) -> str:
+    """https를 먼저 시도하고, 연결이 안 될 때만 http로 내려간다 (인증키가 URL에 실리므로)."""
+    url = API_URL.format(scheme="https", key=urllib.parse.quote(key), service=SERVICE_ID, start=1, end=1)
+    try:
+        with urllib.request.urlopen(url, timeout=20) as res:
+            json.loads(res.read().decode("utf-8"))
+        print("🔒 https로 연결합니다.")
+        return "https"
+    except Exception as e:
+        print(f"   ⚠️ https 연결이 안 돼서 http로 연결합니다 (인증키가 암호화되지 않은 채 전송됨): {type(e).__name__}")
+        return "http"
+
+
 def call_api(key: str, start: int, end: int) -> dict:
     """레시피 start~end번을 요청해서 COOKRCP01 부분을 돌려준다."""
-    url = API_URL.format(key=urllib.parse.quote(key), service=SERVICE_ID, start=start, end=end)
+    global SCHEME
+    if SCHEME is None:
+        SCHEME = pick_scheme(key)
+    url = API_URL.format(scheme=SCHEME, key=urllib.parse.quote(key), service=SERVICE_ID, start=start, end=end)
 
     for attempt in range(1, 4):  # 서버가 잠깐 불안정할 수 있어서 최대 3번 시도
         try:
@@ -68,8 +93,8 @@ def call_api(key: str, start: int, end: int) -> dict:
             break
         except Exception as e:
             if attempt == 3:
-                sys.exit(f"❌ API 호출 실패 ({start}~{end}): {e}")
-            print(f"   ⚠️ 호출 실패, {attempt * 5}초 뒤 다시 시도: {e}")
+                sys.exit(f"❌ API 호출 실패 ({start}~{end}): {type(e).__name__}")
+            print(f"   ⚠️ 호출 실패, {attempt * 5}초 뒤 다시 시도: {type(e).__name__}")
             time.sleep(attempt * 5)
 
     data = body.get(SERVICE_ID)
@@ -97,7 +122,29 @@ def fetch_all_recipes(key: str) -> list:
         page = call_api(key, start, end)
         recipes.extend(page.get("row", []))
         time.sleep(1)  # 서버에 부담 주지 않게 잠깐 쉬기
-    return recipes
+    return recipes, total
+
+
+def check_sanity(rows: list, total: int) -> None:
+    """API가 일부만 주거나 0개를 줬을 때 기존 파일을 덮어쓰지 않도록 멈춘다."""
+    if os.environ.get("FORCE_UPDATE") == "1":
+        print("   ⚠️ FORCE_UPDATE=1 → 개수 검사를 건너뜁니다.")
+        return
+    problems = []
+    if total < MIN_TOTAL:
+        problems.append(f"API가 알려준 전체 개수가 {total}개뿐이에요 (최소 {MIN_TOTAL}개).")
+    if len(rows) < total:
+        problems.append(f"전체 {total}개 중 {len(rows)}개만 받았어요.")
+    if OUTPUT_PATH.exists():
+        try:
+            prev = int(json.loads(OUTPUT_PATH.read_text(encoding="utf-8")).get("count", 0))
+        except Exception:
+            prev = 0
+        if prev and len(rows) < prev * (1 - MAX_DROP_RATIO):
+            problems.append(f"지난번 {prev}개 → 이번 {len(rows)}개로 {MAX_DROP_RATIO:.0%} 넘게 줄었어요.")
+    if problems:
+        sys.exit("❌ 결과가 이상해서 저장하지 않았어요 (기존 파일 유지):\n   - " + "\n   - ".join(problems)
+                 + "\n   정말 줄어든 게 맞다면 FORCE_UPDATE=1 로 다시 실행하세요.")
 
 
 # ---------------------------------------------------------------
@@ -225,13 +272,20 @@ def save(entries: list) -> None:
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
 
+    # 화면(lookup.js)에서 쓰는 필드만 남긴 가벼운 파일
+    slim = {k: output[k] for k in ("source", "note", "generated_at", "count")}
+    slim["recipes"] = [{"name": e["name"], "allergens": e["allergens"], "data_status": e["data_status"]}
+                       for e in entries]
+    MIN_OUTPUT_PATH.write_text(json.dumps(slim, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+
 
 def main() -> None:
     key = load_api_key()
     rules = load_rules()
 
     print("1️⃣ 식약처 Open API 호출")
-    rows = fetch_all_recipes(key)
+    rows, total = fetch_all_recipes(key)
+    check_sanity(rows, total)
 
     print("2️⃣ 재료 정리 + 알레르기 판정")
     entries = [build_entry(r, rules) for r in rows if r.get("RCP_NM")]
@@ -241,7 +295,7 @@ def main() -> None:
 
     review_count = sum(1 for e in entries if e["needs_review"])
     no_ing = sum(1 for e in entries if not e["ingredients"])
-    print(f"✅ 완료: {len(entries)}개 레시피 → {OUTPUT_PATH.relative_to(BASE_DIR)}")
+    print(f"✅ 완료: {len(entries)}개 레시피 → {OUTPUT_PATH.relative_to(BASE_DIR)}, {MIN_OUTPUT_PATH.relative_to(BASE_DIR)}")
     print(f"   🔍 사람 확인이 필요한 재료가 있는 레시피: {review_count}개")
     print(f"   ⚠️ 재료를 못 뽑은 레시피: {no_ing}개")
 

@@ -39,7 +39,7 @@ SOURCE_FILES = [
 CIRCLED = {chr(0x2460 + i): i + 1 for i in range(20)}  # ① → 1 ... ⑳ → 20
 
 # 표에 쓰인 다른 이름 → 표준 이름
-ALIASES = {"알류": "난류", "계란": "난류", "달걀": "난류", "소고기": "쇠고기", "조개": "조개류"}
+ALIASES = {"알류": "난류", "알": "난류", "계란": "난류", "달걀": "난류", "소고기": "쇠고기", "조개": "조개류"}
 
 
 def load_allergen_names() -> dict:
@@ -88,7 +88,8 @@ def parse_allergens(text: str, numbers: str, no_to_name: dict):
     name_to_no = {v: k for k, v in no_to_name.items()}
     from_text = []
     for part in re.split(r"[,，/·]", text):
-        part = ALIASES.get(part.strip(), part.strip())
+        part = re.sub(r"\(.*?\)", "", part).strip()   # "알류(가금류)" → "알류"
+        part = ALIASES.get(part, part)                # "알류" → "난류"
         if part in name_to_no and part not in from_text:
             from_text.append(part)
     from_numbers = [no_to_name[CIRCLED[ch]] for ch in numbers if ch in CIRCLED and CIRCLED[ch] in no_to_name]

@@ -11,14 +11,14 @@
  * 사용 예시
  *   const [dietitian, recipes, rules] = await Promise.all([
  *     fetch("data/dietitian-allergens.json").then(r => r.json()),
- *     fetch("data/recipe-allergens.json").then(r => r.json()),
+ *     fetch("data/recipe-allergens.min.json").then(r => r.json()),
  *     fetch("data/allergen_rules.json").then(r => r.json()),
  *   ]);
  *   const allergenIndex = createAllergenIndex(dietitian, recipes, rules);
  *   const result = allergenIndex.find("치즈돈까스");
  *   // result.allergens → [{ no: 1, name: "난류" }, { no: 2, name: "우유" }, ...]
  *   // result.sourceLabel → "표준 레시피 기준 추정 ('돈가스')"
- *   // isDangerous(result, ["우유"]) → true
+ *   // checkMenu(result, ["우유"]).level → "danger"
  */
 
 // 표기가 흔들리는 단어를 하나로 맞춤 (돈까스/돈가스, 소세지/소시지 ...)
@@ -34,6 +34,13 @@ function normalizeMenuName(name) {
     .toLowerCase();
   for (const [from, to] of SPELLING) s = s.split(from).join(to);
   return s;
+}
+
+// "떡갈비와 미니잡곡밥", "초계탕과 사색곤약"처럼 여러 음식이 묶인 레시피인지
+// (변형 레시피 비교에 넣으면 다른 음식의 알레르기까지 섞여 들어옴)
+function isComboRecipe(name) {
+  const s = String(name || "").replace(/(사과|약과|효과|결과|수정과)/g, ""); // 음식·낱말 속 '과'는 빼고 보기
+  return /[가-힣](와|과|및)\s+\S/.test(s) || /[&+,·]/.test(s);
 }
 
 function splitMenuParts(name) {
@@ -113,21 +120,24 @@ function createAllergenIndex(dietitianData, recipeData, rules) {
 
     if (key.length < 3) return null;
     const variants = recipeList
-      .filter(({ key: rk, recipe }) => rk.includes(key) && recipe.data_status !== "no_ingredients")
+      .filter(({ key: rk, recipe }) =>
+        rk.includes(key) && recipe.data_status !== "no_ingredients" && !isComboRecipe(recipe.name))
       .map(x => x.recipe);
     if (!variants.length) return null;
 
+    // 변형이 1개뿐이면 '공통'을 낼 수 없으니 전부 '주의'로 (예: 잡곡밥 → 한 레시피의 재료를 확정하면 안 됨)
     const sets = variants.map(v => new Set(v.allergens));
-    const common = [...sets[0]].filter(a => sets.every(set => set.has(a)));
+    const common = variants.length < 2 ? [] : [...sets[0]].filter(a => sets.every(set => set.has(a)));
     const some = [...new Set(variants.flatMap(v => v.allergens))].filter(a => !common.includes(a));
+    const sure = [...common, ...hintsFromName(query)];
     const names = variants.slice(0, 3).map(v => v.name).join(", ") + (variants.length > 3 ? " 등" : "");
     return {
       source: "recipe",
       sourceLabel: `표준 레시피 ${variants.length}개 기준 추정 (${names})`,
       confidence: "low",
       matchedName: names,
-      allergens: toObjects([...common, ...hintsFromName(query)]),
-      possibleFromName: toObjects(some), // 레시피에 따라 들어갈 수 있음 → '주의'
+      allergens: toObjects(sure),
+      possibleFromName: toObjects(some.filter(a => !sure.includes(a))), // 레시피에 따라 들어갈 수 있음 → '주의'
       status: "ok",
       note: "비슷한 레시피들로 추정했어요. 실제 학식 재료와 다를 수 있어요.",
     };
@@ -199,15 +209,40 @@ function createAllergenIndex(dietitianData, recipeData, rules) {
  * 사용자 알레르기와 겹치는지 확인 → 화면 표시 단계
  *   danger  : 내 알레르기가 들어 있음            (빨강)
  *   caution : 들어 있을 수 있음 (이름·변형 레시피)  (주황)
- *   unknown : 정보가 부족함 → '안전'이라고 하면 안 됨 (회색)
+ *   unknown : 정보가 부족함 → "안전"이라고 하면 안 됨 (회색)
+ *             reason: needs_check(정보 없음) / none_estimated(영양사표 "없음", note 함께 표시) / low_confidence(비슷한 레시피로 추정)
  *   ok      : 알려진 범위에서는 내 알레르기 없음      (초록, "식당 확인 권장" 문구 함께)
  */
+// 같은 알레르기의 다른 이름 → 표준 이름 (설정 화면 이름이 달라도 경고가 빠지지 않게)
+const ALLERGEN_ALIASES = {
+  "알류": "난류", "알류(가금류)": "난류", "알류(가금류만 해당)": "난류", "난류(가금류)": "난류",
+  "계란": "난류", "달걀": "난류", "소고기": "쇠고기", "조개": "조개류",
+};
+
+function canonicalAllergen(x) {
+  if (typeof x === "number") return x; // 번호(1~19)는 그대로
+  const s = String(x || "").replace(/^[①-⑳]\s*/, "").replace(/\s+/g, ""); // "① 난류" → "난류"
+  return ALLERGEN_ALIASES[s] || s.replace(/\(.*?\)/g, "");
+}
+
+/**
+ * myAllergens는 이름(["난류", "우유"])이나 번호([1, 2]) 둘 다 됩니다. 번호를 권장해요.
+ * "① 난류", "알류(가금류)"처럼 다르게 적어도 같은 알레르기로 봅니다.
+ */
 function checkMenu(result, myAllergens) {
-  const hits = result.allergens.filter(a => myAllergens.includes(a.name));
+  const mine = new Set((myAllergens || []).map(canonicalAllergen));
+  const isMine = a => mine.has(a.no) || mine.has(a.name);
+  const hits = result.allergens.filter(isMine);
   if (hits.length) return { level: "danger", hits };
-  const maybe = (result.possibleFromName || []).filter(a => myAllergens.includes(a.name));
+  const maybe = (result.possibleFromName || []).filter(isMine);
   if (maybe.length) return { level: "caution", hits: maybe };
-  if (result.status === "needs_check") return { level: "unknown", hits: [] };
+  // needs_check(정보 없음)와 none_estimated(영양사 표에 알레르기가 하나도 추정 안 됨)는
+  // 둘 다 '안전 확인'이 아니므로 unknown. reason으로 화면 문구를 나눌 수 있음.
+  if (result.status === "needs_check" || result.status === "none_estimated") {
+    return { level: "unknown", hits: [], reason: result.status };
+  }
+  // 비슷한 레시피로 추정한 결과(확신도 low)는 초록까지 가지 않음
+  if (result.confidence === "low") return { level: "unknown", hits: [], reason: "low_confidence" };
   return { level: "ok", hits: [] };
 }
 
