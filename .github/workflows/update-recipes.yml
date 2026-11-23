@@ -1,26 +1,31 @@
-# main에 '리뷰 필수' 보호 규칙이 있을 때 쓰는 버전입니다.
-# 사용법: update-recipes.yml 을 지우고 이 파일 이름을 update-recipes.yml 로 바꾸세요.
+# 매주 식약처 Open API를 호출해 data/recipe-allergens.json(전체)과 .min.json(화면용)을 새로 만듭니다.
+# main에는 PR로만 반영할 수 있어서(저장소 규칙), 바뀐 내용이 있으면 bot/update-recipes 브랜치로 PR을 엽니다.
+#   - 레시피 내용이 지난번과 같으면 파일을 다시 쓰지 않아서 PR도 열리지 않습니다.
+#   - 결과 개수가 이상하면(0개, 일부만, 10% 넘게 감소) scripts/build_recipes.py가 실패해서 아무것도 올라가지 않습니다.
+#   - 이미 열린 갱신 PR이 있으면 새로 만들지 않고 그 PR의 브랜치만 갱신합니다.
 # 필요한 설정: Settings → Actions → General → Workflow permissions →
 #   "Allow GitHub Actions to create and approve pull requests" 체크
-# 매주 데이터가 바뀌면 bot/update-recipes 브랜치로 PR이 열리고, 팀원이 확인 후 merge 합니다.
 name: Update recipe allergens
 
 on:
   schedule:
-    - cron: "0 18 * * 0" # 매주 월요일 03:00 KST
-  workflow_dispatch:
+    # 매주 월요일 오전 3시(한국 시간) = 일요일 18:00 UTC
+    - cron: "0 18 * * 0"
+  workflow_dispatch: # Actions 탭에서 "Run workflow" 버튼으로 수동 실행도 가능
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: write # bot/update-recipes 브랜치에 push하기 위해 필요
+  pull-requests: write # 갱신 PR을 열기 위해 필요
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: 저장소 가져오기
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: 파이썬 준비
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
