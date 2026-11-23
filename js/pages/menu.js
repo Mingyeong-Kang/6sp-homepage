@@ -20,7 +20,7 @@
   // ---- 메모장: 지금 사용자가 무엇을 골랐는지 기억 ----
   const state = {
     cafeteria: 'engineering',  // 처음엔 신공학관 (진선미관은 준비 중)
-    date: getDefaultDate(),    // 처음엔 오늘 (주말이면 다음 월요일)
+    date: null,                // 맨 아래 [처음 한 번]에서 getDefaultDate()로 채움 (메뉴판을 봐야 해서)
   };
 
   // 이번 주 메뉴 mock (채은님 weekly-menu.json 형식과 같게)
@@ -142,12 +142,26 @@
 
   // ================= 날짜 계산 (Day.js) =================
 
-  // [날짜 1] 처음 보여 줄 날짜: 오늘. 토요일이면 +2일, 일요일이면 +1일 → 다음 월요일
+  // [날짜 1] 처음 보여 줄 날짜
+  //  ① 오늘 (토요일·일요일이면 다음 월요일)
+  //  ② 그날 메뉴가 없으면 → 자료가 있는 날 중 가장 가까운 날
+  //  ③ 자료가 하나도 없으면 → ①의 날짜 그대로
   function getDefaultDate() {
-    const today = dayjs();
-    if (today.day() === 6) return today.add(2, 'day').format('YYYY-MM-DD');
-    if (today.day() === 0) return today.add(1, 'day').format('YYYY-MM-DD');
-    return today.format('YYYY-MM-DD');
+    let today = dayjs().startOf('day');
+    if (today.day() === 6) today = today.add(2, 'day');
+    if (today.day() === 0) today = today.add(1, 'day');
+    const todayText = today.format('YYYY-MM-DD');
+
+    const dates = getDataDates();
+    if (dates.length === 0 || dates.includes(todayText)) return todayText;
+
+    let nearest = dates[0];
+    for (const d of dates) {
+      const gap = Math.abs(dayjs(d).diff(today, 'day'));          // 오늘과 며칠 차이?
+      const bestGap = Math.abs(dayjs(nearest).diff(today, 'day'));
+      if (gap < bestGap) nearest = d;                             // 더 가까우면 바꾸기
+    }
+    return nearest;
   }
 
   // [날짜 2] 그 날짜에 메뉴가 있나? (메뉴판에서 같은 날짜를 찾아봄)
@@ -212,7 +226,10 @@
     if (result.status === 'none_estimated') {
       parts.push('주요 19종 추정 불가');
     }
-    parts.push(result.sourceLabel); // 출처는 항상 맨 끝에 (안전 규칙 2번)
+    parts.push(result.sourceLabel); // 출처는 항상 넣기 (안전 규칙 2번)
+    if (result.note) {
+      parts.push('참고: ' + result.note); // 영양사 참고 사항 (예: "육수 확인") - 안전에 중요
+    }
     return parts.join(' · ');
   }
 
@@ -280,6 +297,19 @@
   // [그리기 4] 메뉴 없는 날 (Figma 04)
   function renderNoData() {
     const dates = getDataDates();
+
+    // 자료 날짜가 하나도 없으면 "마지막 자료" 안내를 할 수 없음
+    // (dayjs(undefined)는 오늘 날짜가 돼서 "마지막 자료는 오늘"이라는 틀린 안내가 나오기 때문)
+    if (dates.length === 0) {
+      return emptyState({
+        icon: 'calendar',
+        title: '아직 받은 식단 자료가 없습니다',
+        textHtml: 'SafeMeal은 영양사님께 받은 자료가 있는 날짜만 보여드려요. 자료를 받으면 날짜별 메뉴를 보여드릴게요.',
+        actions: UI.button({ label: '메뉴 이름으로 찾기', icon: 'search', href: 'search.html' }),
+        hint: '날짜 아래 점(•)이 있는 날만 자료가 있습니다.',
+      });
+    }
+
     const last = dates[dates.length - 1];  // 가장 마지막 자료 날짜
     const lastText = dayjs(last).format('M월 D일 (dd)');
     return emptyState({
@@ -357,7 +387,8 @@
     }
   });
 
-  // [처음 한 번] 페이지가 열리면 그리기
+  // [처음 한 번] 페이지가 열리면 기본 날짜 정하고 그리기
+  state.date = getDefaultDate();
   renderCafeteria();
   renderDates();
   renderBody();
