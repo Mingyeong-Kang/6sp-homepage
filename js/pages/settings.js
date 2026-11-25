@@ -41,7 +41,7 @@
           variant: 'note',
           text:
             '로그인 없이 이 기기의 이 브라우저에만 저장됩니다. ' +
-            '다른 기기에서는 다시 설정해야 해요.'
+            '다른 기기에서는 다시 설정해야 해요. 변경한 내용은 저장하기를 눌러야 적용됩니다.'
         }) +
         '<p class="settings-note">' +
           '들깨·참깨·생선 등 19종 외 성분은 아직 설정할 수 없고, ' +
@@ -51,7 +51,7 @@
 
       actions:
         UI.button({
-          label: '전체 삭제',
+          label: '전체 해제',
           variant: 'danger',
           icon: 'trash',
           attrs: { 'data-clear-allergens': true }

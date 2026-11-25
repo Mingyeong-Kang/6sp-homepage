@@ -160,7 +160,10 @@
 
   // ================= 날짜 계산 (Day.js) =================
 
-  // [날짜 1] 처음 보여 줄 날짜: 오늘. 토요일이면 +2일, 일요일이면 +1일 → 다음 월요일
+  // [날짜 1] 처음 보여 줄 날짜
+  // ① 오늘 (토요일·일요일이면 다음 월요일)
+  // ② 그날 메뉴가 없으면 자료가 있는 날 중 가장 가까운 날
+  // ③ 자료가 하나도 없으면 ①의 날짜 그대로
   function getDefaultDate() {
     let today = dayjs().startOf('day');
     if (today.day() === 6) today = today.add(2, 'day');
@@ -258,9 +261,7 @@
       id: state.date + '-' + index,
       name: menuName,
       desc: buildDesc(result),
-      status: myAllergies.length
-        ? LEVEL_TO_STATUS[check.level]
-        : undefined,
+      status: LEVEL_TO_STATUS[check.level],
       statusDetail: check.hits.map(function (allergen) {
         return allergen.name;
       }).join(', ')
@@ -294,23 +295,19 @@
   // [그리기 3] 메뉴 영역: 범례 + 끼니 카드 (Figma 03)
   function renderUnconfiguredMenu(menuName, index) {
     const result = mockFind(menuName);
-    const labels = [];
+    const allergenNumbers = new Set(
+      result.allergens.concat(result.possibleFromName).map(function (allergen) {
+        return allergen.no;
+      })
+    );
 
-    if (result.allergens.length > 0) {
-      labels.push('확정 ' + circledList(result.allergens));
-    }
+    const informationMissing =
+      result.status === 'needs_check' ||
+      result.status === 'none_estimated';
 
-    if (result.possibleFromName.length > 0) {
-      labels.push('가능 ' + circledList(result.possibleFromName));
-    }
-
-    if (result.status === 'needs_check') {
-      labels.push('정보 부족');
-    }
-
-    const badgeText = labels.length
-      ? labels.join(' · ')
-      : '확인된 성분 정보 없음';
+    const badgeText = informationMissing || allergenNumbers.size === 0
+      ? '정보 부족'
+      : '성분 ' + allergenNumbers.size + '종';
 
     const id = state.date + '-' + index;
 

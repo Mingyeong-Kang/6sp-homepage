@@ -23,6 +23,7 @@
 }
 
 .settings-panel .settings-note {
+  margin-bottom: 32px;
   color: var(--color-text-3);
   font-size: 13px;
   line-height: 1.6;
@@ -40,9 +41,6 @@
   border-top: 1px solid var(--color-divider);
 }
 
-.settings-panel .settings-note {
-  margin-bottom: 32px;
-}
 
 @media (max-width: 768px) {
   .settings-panel .sheet__close {
