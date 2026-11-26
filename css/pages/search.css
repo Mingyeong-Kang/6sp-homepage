@@ -29,3 +29,14 @@
 .search-results {
   margin-top: 1rem;
 }
+
+.search-detail__heading {
+  margin-bottom: 0.25rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.search-detail__empty {
+  font-size: 0.875rem;
+  color: var(--color-text-3);
+}
