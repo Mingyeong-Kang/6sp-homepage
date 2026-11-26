@@ -19,14 +19,14 @@
 .site-header__inner {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 1.25rem;
   height: var(--header-h);
 }
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 20px;
+  gap: 0.625rem;
+  font-size: 1.25rem;
   line-height: 30px;
   font-weight: 700;
   white-space: nowrap;
@@ -40,12 +40,12 @@
   background: var(--color-brand);
   color: #fff;
 }
-.site-nav { display: flex; gap: 4px; flex-shrink: 0; }
+.site-nav { display: flex; gap: 0.25rem; flex-shrink: 0; }
 .site-nav__link {
   white-space: nowrap;
-  padding: 10px 16px;
+  padding: 0.625rem 1rem;
   border-radius: var(--radius-sm);
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 22.5px;
   font-weight: 500;
   color: var(--color-text-2);
@@ -60,27 +60,27 @@
   margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   min-width: 0;
 }
 .my-allergens {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
 }
-.my-allergens__label { font-size: 13px; color: var(--color-text-3); white-space: nowrap; }
-.my-allergens__list { display: flex; gap: 6px; }
+.my-allergens__label { font-size: 0.8125rem; color: var(--color-text-3); white-space: nowrap; }
+.my-allergens__list { display: flex; gap: 0.375rem; }
 
 /* 모바일 전용 설정 버튼 (Figma 모바일: "box: ⑤⑨") */
 .settings-compact {
   display: none;
   align-items: center;
-  gap: 6px;
+  gap: 0.375rem;
   height: 40px;
-  padding: 0 12px;
+  padding: 0 0.75rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   min-width: 0;
   max-width: 100%;
@@ -106,7 +106,7 @@
 }
 
 @media (max-width: 768px) {
-  .brand { font-size: 18px; line-height: 27px; }
+  .brand { font-size: 1.125rem; line-height: 27px; }
   .brand__mark { width: 32px; height: 32px; }
   .site-nav,
   .my-allergens,
@@ -120,19 +120,19 @@
 .site-footer {
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 19.5px;
   color: var(--color-text-3);
 }
 .site-footer__inner {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
-  padding-top: 18px;
-  padding-bottom: 18px;
+  gap: 1rem;
+  padding-top: 1.125rem;
+  padding-bottom: 1.125rem;
 }
 @media (max-width: 768px) {
-  .site-footer__inner { flex-direction: column; gap: 4px; font-size: 12px; }
+  .site-footer__inner { flex-direction: column; gap: 0.25rem; font-size: 0.75rem; }
 }
 
 /* ---------------------------------------------------------
@@ -155,9 +155,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1px;
-    padding-top: 8px;
-    font-size: 11.5px;
+    gap: 0.0625rem;
+    padding-top: 0.5rem;
+    font-size: 0.71875rem;
     line-height: 17px;
     font-weight: 500;
     color: var(--color-text-3);
@@ -172,12 +172,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 0.5rem;
   height: 44px;
-  padding: 0 18px;
+  padding: 0 1.125rem;
   border: 1px solid transparent;
   border-radius: var(--radius-lg);
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 22.5px;
   font-weight: 700;
   white-space: nowrap;
@@ -211,11 +211,11 @@
   display: inline-flex;
   align-items: center;
   height: 29.5px;
-  padding: 0 10px;
+  padding: 0 0.625rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
   background: var(--color-surface);
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 19.5px;
   font-weight: 700;
   color: var(--color-text-2);
@@ -228,12 +228,12 @@
 .status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.375rem;
   height: 29.5px;
-  padding: 0 10px;
+  padding: 0 0.625rem;
   border: 1px solid;
   border-radius: var(--radius-pill);
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 19.5px;
   font-weight: 700;
   white-space: nowrap;
@@ -243,7 +243,7 @@
 .status-badge--unknown  { background: var(--status-unknown-bg);  border-color: var(--status-unknown-border);  color: var(--status-unknown-fg); }
 .status-badge--clear    { background: var(--status-clear-bg);    border-color: var(--status-clear-border);    color: var(--status-clear-fg); }
 
-.status-legend { display: flex; flex-wrap: wrap; gap: 8px; }
+.status-legend { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 
 /* ---------------------------------------------------------
    7. AllergenTag 성분 태그 (메뉴 상세의 "확정 / 포함 가능")
@@ -252,10 +252,10 @@
   display: inline-flex;
   align-items: center;
   height: 29.5px;
-  padding: 0 12px;
+  padding: 0 0.75rem;
   border: 1px solid;
   border-radius: var(--radius-pill);
-  font-size: 13px;
+  font-size: 0.8125rem;
   line-height: 19.5px;
   font-weight: 700;
   white-space: nowrap;
@@ -272,17 +272,17 @@
    --------------------------------------------------------- */
 .segmented {
   display: inline-flex;
-  gap: 4px;
-  padding: 4px;
+  gap: 0.25rem;
+  padding: 0.25rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
 }
 .segmented__option {
   height: 38.5px;
-  padding: 0 18px;
+  padding: 0 1.125rem;
   border-radius: 9px;
-  font-size: 15px;
+  font-size: 0.9375rem;
   line-height: 22.5px;
   font-weight: 500;
   color: var(--color-text-2);
@@ -297,7 +297,7 @@
 /* ---------------------------------------------------------
    9. DateStrip 주간 날짜 선택 (Figma: "box: 월" … + 화살표)
    --------------------------------------------------------- */
-.date-strip { display: flex; gap: 8px; }
+.date-strip { display: flex; gap: 0.5rem; }
 .date-strip__nav,
 .date-strip__day {
   display: flex;
@@ -312,21 +312,21 @@
 }
 .date-strip__nav { width: 44px; }
 .date-strip__nav:disabled { color: var(--color-border-strong); cursor: not-allowed; }
-.date-strip__day { width: 84px; gap: 2px; font-weight: 700; }
+.date-strip__day { width: 84px; gap: 0.125rem; font-weight: 700; }
 .date-strip__day:hover { border-color: var(--color-border-strong); }
-.date-strip__dow { font-size: 12px; line-height: 18px; }
-.date-strip__num { font-size: 20px; line-height: 22px; }
-.date-strip__dot { width: 6px; height: 6px; margin-top: 4px; border-radius: 3px; background: var(--color-brand); }
-.date-strip__empty { font-size: 10px; line-height: 15px; font-weight: 400; color: var(--color-text-3); white-space: nowrap; letter-spacing: -0.3px; }
+.date-strip__dow { font-size: 0.75rem; line-height: 18px; }
+.date-strip__num { font-size: 1.25rem; line-height: 22px; }
+.date-strip__dot { width: 6px; height: 6px; margin-top: 0.25rem; border-radius: 3px; background: var(--color-brand); }
+.date-strip__empty { font-size: 0.625rem; line-height: 15px; font-weight: 400; color: var(--color-text-3); white-space: nowrap; letter-spacing: -0.3px; }
 .date-strip__day[aria-pressed="true"] { background: var(--color-brand); border-color: var(--color-brand); color: #fff; }
 .date-strip__day[aria-pressed="true"] .date-strip__dot { background: #fff; }
 .date-strip__day[aria-pressed="true"] .date-strip__empty { color: rgba(255,255,255,.8); }
 
 @media (max-width: 768px) {
-  .date-strip { gap: 8px; width: 100%; }
+  .date-strip { gap: 0.5rem; width: 100%; }
   .date-strip__nav { width: 40px; height: 64px; flex-shrink: 0; }
   .date-strip__day { flex: 1; width: auto; min-width: 0; height: 64px; }
-  .date-strip__num { font-size: 18px; line-height: 20px; }
+  .date-strip__num { font-size: 1.125rem; line-height: 20px; }
 }
 
 /* ---------------------------------------------------------
@@ -335,10 +335,10 @@
 .menu-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 0.75rem;
   width: 100%;
   min-height: 71.5px;
-  padding: 12px 18px 12px 16px;
+  padding: 0.75rem 1.125rem 0.75rem 1rem;
   border: 1px solid var(--color-divider);
   border-radius: var(--radius-lg);
   background: var(--color-surface-sub);
@@ -348,15 +348,15 @@
 .menu-item__text { flex: 1; min-width: 0; }
 .menu-item__name,
 .menu-item__desc { display: block; }
-.menu-item__name { font-size: 16px; line-height: 24px; font-weight: 700; color: var(--color-text); }
-.menu-item__desc { font-size: 13px; line-height: 19.5px; color: var(--color-text-3); }
+.menu-item__name { font-size: 1rem; line-height: 24px; font-weight: 700; color: var(--color-text); }
+.menu-item__desc { font-size: 0.8125rem; line-height: 19.5px; color: var(--color-text-3); }
 .menu-item__chevron { color: var(--color-text-3); }
 
 /* ---------------------------------------------------------
    11. MealCard 끼니 카드 (Figma: "box: 중식" / "box: 석식")
    --------------------------------------------------------- */
 .meal-card {
-  padding: 24px;
+  padding: 1.5rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-2xl);
   background: var(--color-surface);
@@ -365,40 +365,40 @@
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 14px;
+  gap: 0.75rem;
+  margin-bottom: 0.875rem;
 }
-.meal-card__title { font-size: 20px; line-height: 30px; font-weight: 700; margin-right: auto; }
-.meal-card__summary { display: flex; flex-wrap: wrap; gap: 6px; }
-.meal-card__list { display: flex; flex-direction: column; gap: 8px; }
-.meal-card__empty { padding: 24px 0; text-align: center; color: var(--color-text-3); font-size: 14px; }
+.meal-card__title { font-size: 1.25rem; line-height: 30px; font-weight: 700; margin-right: auto; }
+.meal-card__summary { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+.meal-card__list { display: flex; flex-direction: column; gap: 0.5rem; }
+.meal-card__empty { padding: 1.5rem 0; text-align: center; color: var(--color-text-3); font-size: 0.875rem; }
 
 /* 중식·석식 2단 배치용 */
 .meal-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
+  gap: 1.5rem;
   align-items: start;
 }
 
 @media (max-width: 768px) {
-  .meal-grid { grid-template-columns: 1fr; gap: 16px; }
+  .meal-grid { grid-template-columns: 1fr; gap: 1rem; }
   .meal-card { padding: 0; border-radius: var(--radius-xl); overflow: hidden; }
-  .meal-card__head { margin: 0; padding: 14px; border-bottom: 1px solid var(--color-divider); }
+  .meal-card__head { margin: 0; padding: 0.875rem; border-bottom: 1px solid var(--color-divider); }
   .meal-card--tabbed .meal-card__title { display: none; }
   .meal-card__list { gap: 0; }
   .menu-item {
     min-height: 54.5px;
-    padding: 12px 14px;
+    padding: 0.75rem 0.875rem;
     border: 0;
     border-bottom: 1px solid var(--color-divider);
     border-radius: 0;
     background: var(--color-surface);
   }
   .menu-item:last-child { border-bottom: 0; }
-  .menu-item__name { font-size: 15px; line-height: 22.5px; }
+  .menu-item__name { font-size: 0.9375rem; line-height: 22.5px; }
   /* 설명줄(성분 번호·출처)은 안전 정보라 모바일에서도 보여 주고, 화살표만 숨김 */
-  .menu-item__desc { font-size: 12px; line-height: 18px; }
+  .menu-item__desc { font-size: 0.75rem; line-height: 18px; }
   .menu-item__chevron { display: none; }
 }
 
@@ -408,15 +408,15 @@
 .callout {
   display: flex;
   align-items: flex-start;
-  gap: 14px;
-  padding: 16px 20px;
+  gap: 0.875rem;
+  padding: 1rem 1.25rem;
   border: 1px solid;
   border-radius: var(--radius-xl);
 }
-.callout__icon { margin-top: 1px; }
+.callout__icon { margin-top: 0.0625rem; }
 .callout__body { flex: 1; min-width: 0; }
-.callout__title { font-size: 15px; line-height: 22.5px; font-weight: 700; color: var(--color-text); }
-.callout__text { margin-top: 2px; font-size: 14px; line-height: 21px; color: var(--color-text-2); }
+.callout__title { font-size: 0.9375rem; line-height: 22.5px; font-weight: 700; color: var(--color-text); }
+.callout__text { margin-top: 0.125rem; font-size: 0.875rem; line-height: 21px; color: var(--color-text-2); }
 .callout__action { align-self: center; flex-shrink: 0; }
 
 .callout--info   { background: var(--callout-info-bg);   border-color: var(--callout-info-border);   }
@@ -430,14 +430,14 @@
 
 /* 작은 회색 메모 (Figma: "로그인 없이 이 기기의 이 브라우저에만 저장") */
 .callout--note {
-  gap: 6px;
-  padding: 12px 14px;
+  gap: 0.375rem;
+  padding: 0.75rem 0.875rem;
   border: 0;
   border-radius: var(--radius-lg);
   background: var(--color-bg);
 }
-.callout--note .callout__icon { color: var(--color-text-3); margin-top: 2px; }
-.callout--note .callout__text { margin: 0; font-size: 13px; line-height: 19.5px; }
+.callout--note .callout__icon { color: var(--color-text-3); margin-top: 0.125rem; }
+.callout--note .callout__text { margin: 0; font-size: 0.8125rem; line-height: 19.5px; }
 
 @media (max-width: 768px) {
   .callout { flex-wrap: wrap; }
@@ -451,19 +451,19 @@
 .check-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+  gap: 0.5rem;
 }
 .check-tile {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
   height: 48px;
-  padding: 0 14px;
+  padding: 0 0.875rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   background: var(--color-surface);
-  font-size: 15px;
+  font-size: 0.9375rem;
   font-weight: 500;
   cursor: pointer;
   user-select: none;
@@ -481,7 +481,7 @@
 }
 .check-tile:has(input:checked) {
   border: 2px solid var(--color-brand);
-  padding: 0 13px;
+  padding: 0 0.8125rem;
   background: var(--color-brand-soft);
   font-weight: 700;
 }
@@ -495,26 +495,26 @@
 /* ---------------------------------------------------------
    14. 상세 화면용 행 (JudgeRow: "⑤ 대두 | 설명 | 배지", InfoRow: "출처 | 값")
    --------------------------------------------------------- */
-.section-label { font-size: 15px; line-height: 22.5px; font-weight: 700; margin-bottom: 4px; }
+.section-label { font-size: 0.9375rem; line-height: 22.5px; font-weight: 700; margin-bottom: 0.25rem; }
 
 .judge-row {
   display: grid;
   grid-template-columns: 122px 1fr auto;
   align-items: center;
-  gap: 8px;
+  gap: 0.5rem;
   min-height: 54.5px;
   border-top: 1px solid var(--color-divider);
 }
-.judge-row__name { font-size: 15px; font-weight: 700; }
-.judge-row__desc { font-size: 14px; line-height: 21px; color: var(--color-text-2); }
+.judge-row__name { font-size: 0.9375rem; font-weight: 700; }
+.judge-row__desc { font-size: 0.875rem; line-height: 21px; color: var(--color-text-2); }
 
 .info-row {
   display: grid;
   grid-template-columns: 136px 1fr;
-  gap: 8px;
-  padding: 10px 0;
+  gap: 0.5rem;
+  padding: 0.625rem 0;
   border-top: 1px solid var(--color-divider);
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 21px;
 }
 .info-row__label { color: var(--color-text-3); }
@@ -523,11 +523,11 @@
   display: grid;
   grid-template-columns: 104px 1fr;
   align-items: center;
-  gap: 8px;
-  padding: 4px 0;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
 }
-.tag-row__label { font-size: 13px; color: var(--color-text-3); }
-.tag-row__tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag-row__label { font-size: 0.8125rem; color: var(--color-text-3); }
+.tag-row__tags { display: flex; flex-wrap: wrap; gap: 0.375rem; }
 
 @media (max-width: 768px) {
   .judge-row { grid-template-columns: 96px 1fr auto; }
@@ -545,7 +545,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 1.5rem;
   background: var(--color-overlay);
   animation: sm-fade .15s ease-out;
 }
@@ -555,18 +555,18 @@
   max-width: 640px;
   max-height: calc(100vh - 48px);
   overflow-y: auto;
-  padding: 28px 32px 32px;
+  padding: 1.75rem 2rem 2rem;
   border-radius: var(--radius-2xl);
   background: var(--color-surface);
   animation: sm-pop .18s ease-out;
 }
 .sheet__handle { display: none; }
 .sheet__close { position: absolute; top: 20px; right: 20px; }
-.sheet__meta { display: flex; flex-wrap: wrap; gap: 6px; padding-right: 48px; }
-.sheet__title { margin-top: 10px; font-size: 30px; line-height: 45px; font-weight: 700; }
-.sheet__body > * + * { margin-top: 20px; }
-.sheet__footnote { font-size: 12.5px; line-height: 18.75px; color: var(--color-text-3); }
-.sheet__actions { display: flex; gap: 8px; }
+.sheet__meta { display: flex; flex-wrap: wrap; gap: 0.375rem; padding-right: 3rem; }
+.sheet__title { margin-top: 0.625rem; font-size: 1.875rem; line-height: 45px; font-weight: 700; }
+.sheet__body > * + * { margin-top: 1.25rem; }
+.sheet__footnote { font-size: 0.78125rem; line-height: 18.75px; color: var(--color-text-3); }
+.sheet__actions { display: flex; gap: 0.5rem; }
 
 /* 오른쪽 패널 */
 .sheet-overlay--panel { justify-content: flex-end; padding: 0; }
@@ -585,7 +585,7 @@
     max-width: none;
     height: auto;
     max-height: 90vh;
-    padding: 28px 20px calc(20px + env(safe-area-inset-bottom));
+    padding: 1.75rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom));
     border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
     animation: sm-slide-up .2s ease-out;
   }
@@ -594,13 +594,13 @@
     position: absolute;
     top: 10px; left: 50%;
     width: 40px; height: 4px;
-    margin-left: -20px;
+    margin-left: -1.25rem;
     border-radius: 2px;
     background: var(--color-border-strong);
   }
   .sheet__close { display: none; }      /* 모바일은 하단 '닫기' 버튼으로 */
   .sheet__meta { padding-right: 0; }
-  .sheet__title { font-size: 24px; line-height: 36px; }
+  .sheet__title { font-size: 1.5rem; line-height: 36px; }
   .sheet__actions .btn { flex: 1; height: 48px; }
 }
 
