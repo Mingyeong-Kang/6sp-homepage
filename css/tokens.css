@@ -63,14 +63,14 @@
 
   /* 레이아웃 */
   --container: 1216px;
-  --gutter: 24px;
+  --gutter: 1.5rem;   /* 24px */
   --header-h: 72px;
   --tabbar-h: 70px;
 }
 
 @media (max-width: 768px) {
   :root {
-    --gutter: 16px;
+    --gutter: 1rem;     /* 16px */
     --header-h: 65px;
   }
 }

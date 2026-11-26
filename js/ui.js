@@ -395,6 +395,9 @@
     if (list) list.innerHTML = ids.map((id) => chip(SM.allergenLabel(id))).join('');
     if (wrap) wrap.hidden = ids.length === 0;
     if (compact) compact.textContent = ids.length ? ids.map(SM.circled).join('') : '설정';
+    // 5개 이상이면 칩 대신 번호 버튼으로 (components.css의 [data-many-allergens])
+    const headerEl = document.querySelector('.site-header');
+    if (headerEl) headerEl.toggleAttribute('data-many-allergens', ids.length >= 5);
   }
 
   /* ---------------- 공통 동작 (이벤트 위임) ---------------- */

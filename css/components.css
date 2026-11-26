@@ -40,8 +40,9 @@
   background: var(--color-brand);
   color: #fff;
 }
-.site-nav { display: flex; gap: 4px; }
+.site-nav { display: flex; gap: 4px; flex-shrink: 0; }
 .site-nav__link {
+  white-space: nowrap;
   padding: 10px 16px;
   border-radius: var(--radius-sm);
   font-size: 15px;
@@ -60,13 +61,14 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  min-width: 0;
 }
 .my-allergens {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.my-allergens__label { font-size: 13px; color: var(--color-text-3); }
+.my-allergens__label { font-size: 13px; color: var(--color-text-3); white-space: nowrap; }
 .my-allergens__list { display: flex; gap: 6px; }
 
 /* 모바일 전용 설정 버튼 (Figma 모바일: "box: ⑤⑨") */
@@ -80,6 +82,27 @@
   border-radius: var(--radius-md);
   font-size: 13px;
   font-weight: 700;
+  min-width: 0;
+  max-width: 100%;
+}
+/* 알레르기 번호가 많아도 버튼 밖으로 넘치지 않게 (전체 목록은 설정 패널에서 확인) */
+.settings-compact > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 태블릿(769~1023px) 또는 알레르기 5개 이상: 칩 목록 대신 번호 버튼으로 표시
+   → 로고 + 메뉴 3개 + 칩이 한 줄에 다 안 들어가 헤더가 넘치는 문제 방지 */
+.site-header[data-many-allergens] .my-allergens,
+.site-header[data-many-allergens] .site-header__right > .btn { display: none; }
+.site-header[data-many-allergens] .settings-compact { display: inline-flex; }
+
+@media (min-width: 769px) and (max-width: 1023px) {
+  .my-allergens,
+  .site-header__right > .btn { display: none; }
+  .settings-compact { display: inline-flex; }
 }
 
 @media (max-width: 768px) {
@@ -374,7 +397,8 @@
   }
   .menu-item:last-child { border-bottom: 0; }
   .menu-item__name { font-size: 15px; line-height: 22.5px; }
-  .menu-item__desc,
+  /* 설명줄(성분 번호·출처)은 안전 정보라 모바일에서도 보여 주고, 화살표만 숨김 */
+  .menu-item__desc { font-size: 12px; line-height: 18px; }
   .menu-item__chevron { display: none; }
 }
 
