@@ -6,6 +6,7 @@
 (function () {
   'use strict';
 
+  const inputSlot = document.getElementById('search-input');
   const resultsSlot = document.getElementById('search-results');
 
   // mock 메뉴 목록 (채은님 lookup.js 연동 전까지 임시로 사용)
@@ -23,6 +24,17 @@
       ? `<div class="search-results__list">${menus.map(UI.menuItem).join('')}</div>`
       : `<p class="search-results__empty">검색 결과가 없습니다.</p>`;
   }
+
+  // 메뉴 이름 검색 필터링 (입력할 때마다 바로 반영)
+  function filterMenus(query) {
+    const q = query.trim();
+    if (!q) return MOCK_MENUS;
+    return MOCK_MENUS.filter((m) => m.name.includes(q));
+  }
+
+  inputSlot.addEventListener('input', (e) => {
+    renderList(filterMenus(e.target.value));
+  });
 
   renderList(MOCK_MENUS);
 })();
