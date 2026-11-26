@@ -260,7 +260,22 @@ def build_entry(row: dict, rules: dict) -> dict:
 # ---------------------------------------------------------------
 # 4. 저장
 # ---------------------------------------------------------------
-def save(entries: list) -> None:
+def is_unchanged(entries: list) -> bool:
+    """지난번 결과와 레시피 내용이 똑같은지 (만든 시각 generated_at은 비교에서 뺌)."""
+    if not (OUTPUT_PATH.exists() and MIN_OUTPUT_PATH.exists()):
+        return False
+    try:
+        prev = json.loads(OUTPUT_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        return False
+    return prev.get("recipes") == entries
+
+
+def save(entries: list) -> bool:
+    """저장하면 True, 내용이 같아서 건너뛰면 False."""
+    if is_unchanged(entries):
+        # 시각만 바뀐 파일을 쓰면 git이 '변경됨'으로 봐서 매주 쓸데없는 갱신 PR이 열림
+        return False
     kst = timezone(timedelta(hours=9))
     output = {
         "source": "식품의약품안전처 식품안전나라 Open API - 조리식품의 레시피 DB (COOKRCP01)",
@@ -277,6 +292,7 @@ def save(entries: list) -> None:
     slim["recipes"] = [{"name": e["name"], "allergens": e["allergens"], "data_status": e["data_status"]}
                        for e in entries]
     MIN_OUTPUT_PATH.write_text(json.dumps(slim, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    return True
 
 
 def main() -> None:
@@ -291,7 +307,9 @@ def main() -> None:
     entries = [build_entry(r, rules) for r in rows if r.get("RCP_NM")]
 
     print("3️⃣ JSON 저장")
-    save(entries)
+    if not save(entries):
+        print(f"✅ 지난번과 레시피 내용이 같아서 파일을 그대로 뒀어요. ({len(entries)}개)")
+        return
 
     review_count = sum(1 for e in entries if e["needs_review"])
     no_ing = sum(1 for e in entries if not e["ingredients"])
