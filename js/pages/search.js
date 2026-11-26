@@ -7,6 +7,7 @@
   'use strict';
 
   const inputSlot = document.getElementById('search-input');
+  const noticeSlot = document.getElementById('search-notice');
   const resultsSlot = document.getElementById('search-results');
 
   // checkMenu()의 판정(danger/caution/unknown/ok) → 화면 배지 상태(contains/may/unknown/clear)
@@ -25,20 +26,43 @@
 
   function buildMenu(index, name) {
     const result = index.find(name);
-    const check = checkMenu(result, getMyAllergies());
+    const mine = getMyAllergies();
+    const check = checkMenu(result, mine);
     return {
       id: name,
       name: name,
       result: result,
-      status: LEVEL_TO_STATUS[check.level],
+      // 알레르기를 설정하기 전에는 판정 배지를 숨김 (비교 대상이 없어서 "충돌 없음"이 안전처럼 보이는 것을 막음)
+      status: mine.length ? LEVEL_TO_STATUS[check.level] : undefined,
       statusDetail: check.hits[0] ? check.hits[0].name : undefined,
     };
+  }
+
+  // 알레르기를 아직 설정하지 않았으면 설정 유도 안내 (이수빈님 식단 화면과 같은 문구)
+  function renderNotice() {
+    noticeSlot.innerHTML = getMyAllergies().length
+      ? ''
+      : UI.callout({
+          variant: 'brand',
+          title: '내 알레르기를 설정하면 메뉴마다 포함 여부를 알려드려요',
+          text: '식약처 표시 대상 19종 중에서 고르면 됩니다. 로그인 없이 이 기기 브라우저에만 저장됩니다.',
+          action: UI.button({ label: '알레르기 설정하기', variant: 'primary', icon: 'sliders', attrs: { 'data-open-settings': true } }),
+        });
+  }
+
+  function renderEmpty() {
+    const q = inputSlot.value.trim();
+    return UI.callout({
+      variant: 'info',
+      title: q ? `‘${q}’ 검색 결과가 없어요` : '검색할 수 있는 메뉴가 없어요',
+      text: '영양사 성분표에 없는 메뉴일 수 있어요. 자료에 없다고 해서 알레르기 성분이 없다는 뜻은 아니니, 드시기 전 식당에 꼭 확인하세요.',
+    });
   }
 
   function renderList(menus) {
     resultsSlot.innerHTML = menus.length
       ? `<div class="search-results__list">${menus.map((m) => UI.menuItem(m)).join('')}</div>`
-      : `<p class="search-results__empty">검색 결과가 없습니다.</p>`;
+      : renderEmpty();
   }
 
   // 메뉴 이름 검색 필터링 (입력할 때마다 바로 반영)
@@ -87,8 +111,11 @@
   // 설정 화면에서 내 알레르기를 바꾸면 판정도 다시 계산
   document.addEventListener('sm:allergens-changed', () => {
     currentMenus = currentMenus.map((m) => buildMenu(index, m.name));
+    renderNotice();
     renderList(filterMenus(inputSlot.value));
   });
+
+  renderNotice();
 
   let index = null;
 

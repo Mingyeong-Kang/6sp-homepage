@@ -22,12 +22,10 @@
   outline-offset: 2px;
 }
 
-.search-results {
+.search-notice:not(:empty) {
   margin-top: 1rem;
 }
 
-.search-results__empty {
-  color: var(--color-text-3);
-  text-align: center;
-  padding: 2rem 0;
+.search-results {
+  margin-top: 1rem;
 }
