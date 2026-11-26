@@ -36,6 +36,12 @@
   margin-bottom: 24px;
 }
 
+/* 끼니 카드 상자: 신공학관은 카드가 1개라 1열 (공통 .meal-grid는 2열이라 반쪽만 차지했음) */
+.menu-meals {
+  display: grid;
+  gap: 1rem;
+}
+
 /* ---------- 빈 상태 점선 박스 (Figma 04) ---------- */
 .menu-empty {
   display: flex;

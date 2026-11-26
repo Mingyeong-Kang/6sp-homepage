@@ -337,7 +337,7 @@
 
     if (getMyAllergies().length === 0) {
       return `
-        <div class="meal-grid">
+        <div class="menu-meals">
           <section class="meal-card" aria-label="${UI.esc(day.meal)}">
             <div class="meal-card__head">
               <h2 class="meal-card__title">${UI.esc(day.meal)}</h2>
@@ -360,7 +360,7 @@
 
     return `
       <div class="menu-legend">${UI.statusLegend()}</div>
-      <div class="meal-grid">
+      <div class="menu-meals">
         ${UI.mealCard({ title: day.meal, items: items })}
       </div>
     `;
