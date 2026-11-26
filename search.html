@@ -19,13 +19,19 @@
   <main class="page container" id="app">
     <div class="page-head">
       <h1 class="page-title">메뉴 검색</h1>
+      <p class="page-desc">날짜와 상관없이 메뉴 이름으로 성분을 찾아요. 띄어쓰기나 오타가 있어도 비슷한 메뉴를 보여드립니다.</p>
     </div>
     <div class="search-box">
       <label for="search-input" class="sr-only">메뉴 이름으로 검색</label>
       <input type="search" id="search-input" class="search-box__input" placeholder="메뉴 이름으로 검색 (예: 제육볶음)">
     </div>
+    <div class="search-filter">
+      <div id="search-chips" class="search-chips" role="group" aria-label="식당 선택"></div>
+      <p id="search-summary" class="search-summary"></p>
+    </div>
     <div id="search-notice" class="search-notice"></div>
     <div id="search-results" class="search-results"></div>
+    <div id="search-guide" class="search-guide"></div>
   </main>
 
   <script src="js/icons.js"></script>

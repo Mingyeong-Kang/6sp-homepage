@@ -9,11 +9,15 @@
   const inputSlot = document.getElementById('search-input');
   const noticeSlot = document.getElementById('search-notice');
   const resultsSlot = document.getElementById('search-results');
+  const summarySlot = document.getElementById('search-summary');
+  const chipsSlot = document.getElementById('search-chips');
+  const guideSlot = document.getElementById('search-guide');
 
   // checkMenu()의 판정(danger/caution/unknown/ok) → 화면 배지 상태(contains/may/unknown/clear)
   const LEVEL_TO_STATUS = { danger: 'contains', caution: 'may', unknown: 'unknown', ok: 'clear' };
 
   let currentMenus = [];
+  let cafeteria = 'all'; // 식당 칩: 'all' 또는 SM.CAFETERIAS의 id
   let dataDate = ''; // 영양사 자료 JSON이 만들어진 날 (YYYY-MM-DD)
 
   // 영양사 자료의 날짜는 연도 없는 "10/26" 형식 → 자료가 만들어진 해를 붙여 요일 계산
@@ -33,6 +37,20 @@
     }
   }
 
+  // 결과 한 줄 설명: 식당 · 제공된 날, 확정/가능 성분 번호
+  function buildDesc(entry, result) {
+    const dates = entry.dates || [];
+    const where = dates.length
+      ? `신공학관 · ${formatDate(dates[0])} ${entry.category}`
+      : `신공학관 ${entry.category} · 날짜 정보 없음`;
+    const nums = (list) => list.map((a) => SM.circled(a.no)).join('');
+    const parts = [];
+    if (result.allergens.length) parts.push(`확정 ${nums(result.allergens)}`);
+    if (result.possibleFromName.length) parts.push(`가능 ${nums(result.possibleFromName)}`);
+    if (!parts.length) parts.push('표시된 성분 없음');
+    return [where, ...parts].join(' · ');
+  }
+
   function buildMenu(index, entry) {
     const result = index.find(entry.name);
     const mine = getMyAllergies();
@@ -40,6 +58,9 @@
     return {
       id: entry.name,
       name: entry.name,
+      key: normalizeMenuName(entry.name),
+      cafeteria: 'engineering', // 지금은 신공학관 영양사 성분표만 있음. 다른 식당 자료가 생기면 여기서 구분
+      desc: buildDesc(entry, result),
       entry: entry,
       result: result,
       // 알레르기를 설정하기 전에는 판정 배지를 숨김 (비교 대상이 없어서 "충돌 없음"이 안전처럼 보이는 것을 막음)
@@ -62,6 +83,15 @@
 
   function renderEmpty() {
     const q = inputSlot.value.trim();
+    const chosen = SM.CAFETERIAS.find((c) => c.id === cafeteria);
+    // 선택한 식당의 자료가 아직 하나도 없으면 "검색 결과 없음"이 아니라 "준비 중" 안내 (식단 화면과 같은 문구)
+    if (chosen && !currentMenus.some((m) => m.cafeteria === cafeteria)) {
+      return UI.callout({
+        variant: 'info',
+        title: `${chosen.name} 자료는 준비 중입니다`,
+        text: `지금은 신공학관 자료만 검색할 수 있어요. ${chosen.name}은 영양사님 자료를 받으면 추가할 예정이에요.`,
+      });
+    }
     return UI.callout({
       variant: 'info',
       title: q ? `‘${q}’ 검색 결과가 없어요` : '검색할 수 있는 메뉴가 없어요',
@@ -69,21 +99,83 @@
     });
   }
 
+  // 검색어 요약 줄: 결과 개수와 판정 기준(내 알레르기)
+  function renderSummary(count) {
+    const q = inputSlot.value.trim();
+    const mine = SM.ALLERGENS.filter((a) => getMyAllergies().includes(a.id));
+    const basis = mine.length ? ` · 판정 기준: ${mine.map((a) => SM.allergenLabel(a.id)).join(', ')}` : '';
+    summarySlot.textContent = (q ? `‘${q}’${josaWaGwa(q)} 비슷한 메뉴 ${count}개` : `전체 메뉴 ${count}개`) + basis;
+  }
+
+  // 식당 칩: 검색어에 맞는 메뉴의 식당별 개수를 같이 보여 줌
+  function renderChips(matched) {
+    const options = [{ id: 'all', name: '전체' }, ...SM.CAFETERIAS];
+    chipsSlot.innerHTML = options.map((c) => {
+      const count = c.id === 'all' ? matched.length : matched.filter((m) => m.cafeteria === c.id).length;
+      return `<button type="button" class="search-chip" data-cafeteria="${UI.esc(c.id)}" aria-pressed="${c.id === cafeteria}">${UI.esc(c.name)} <span class="search-chip__count">${count}</span></button>`;
+    }).join('');
+  }
+
+  // 검색어 → 식당 칩 → 목록 순서로 한 번에 다시 그리기
+  function refresh() {
+    const matched = filterMenus(inputSlot.value);
+    renderChips(matched);
+    renderList(cafeteria === 'all' ? matched : matched.filter((m) => m.cafeteria === cafeteria));
+  }
+
   function renderList(menus) {
+    renderSummary(menus.length);
     resultsSlot.innerHTML = menus.length
       ? `<div class="search-results__list">${menus.map((m) => UI.menuItem(m)).join('')}</div>`
       : renderEmpty();
   }
 
-  // 메뉴 이름 검색 필터링 (입력할 때마다 바로 반영)
-  function filterMenus(query) {
-    const q = query.trim();
-    if (!q) return currentMenus;
-    return currentMenus.filter((m) => m.name.includes(q));
+  // 메뉴 이름 안에서 검색어와 가장 비슷한 부분까지의 글자 차이 수 (글자 바뀜·빠짐·끼어듦을 1로 셈)
+  // 예: "제욱볶음"은 "제육볶음" 안에서 1 차이
+  function editDistanceInside(q, text) {
+    let col = Array.from({ length: q.length + 1 }, (_, i) => i);
+    let best = col[q.length];
+    for (const ch of text) {
+      const next = [0];
+      for (let i = 1; i <= q.length; i++) {
+        next[i] = Math.min(col[i] + 1, next[i - 1] + 1, col[i - 1] + (q[i - 1] === ch ? 0 : 1));
+      }
+      col = next;
+      best = Math.min(best, col[q.length]);
+    }
+    return best;
   }
 
-  inputSlot.addEventListener('input', (e) => {
-    renderList(filterMenus(e.target.value));
+  // 메뉴 이름 검색 (입력할 때마다 바로 반영)
+  // 띄어쓰기·기호·표기 차이(돈가스/돈까스)는 무시하고, 못 찾으면 글자가 조금 다른 메뉴(오타)를 보여 줌
+  function filterMenus(query) {
+    const q = normalizeMenuName(query);
+    if (!q) return currentMenus;
+    const rank = (m) => (m.key === q ? 0 : m.key.startsWith(q) ? 1 : 2);
+    const hits = currentMenus.filter((m) => m.key.includes(q)).sort((a, b) => rank(a) - rank(b));
+    if (hits.length || q.length < 3) return hits;
+    const maxEdit = q.length >= 6 ? 2 : 1;
+    return currentMenus
+      .map((m) => ({ m, dist: editDistanceInside(q, m.key) }))
+      .filter((x) => x.dist <= maxEdit)
+      .sort((a, b) => a.dist - b.dist)
+      .map((x) => x.m);
+  }
+
+  // 받침 유무에 따라 "와/과" 선택
+  function josaWaGwa(word) {
+    const last = word.charCodeAt(word.length - 1);
+    const hasBatchim = last >= 0xac00 && last <= 0xd7a3 && (last - 0xac00) % 28 !== 0;
+    return hasBatchim ? '과' : '와';
+  }
+
+  inputSlot.addEventListener('input', refresh);
+
+  chipsSlot.addEventListener('click', (e) => {
+    const chip = e.target.closest('[data-cafeteria]');
+    if (!chip) return;
+    cafeteria = chip.dataset.cafeteria;
+    refresh();
   });
 
   // 내 알레르기 하나에 대한 판정 이유 문구 (checkMenu의 level/reason 기준)
@@ -197,10 +289,17 @@
   document.addEventListener('sm:allergens-changed', () => {
     currentMenus = currentMenus.map((m) => buildMenu(index, m.entry));
     renderNotice();
-    renderList(filterMenus(inputSlot.value));
+    refresh();
   });
 
   renderNotice();
+
+  inputSlot.parentElement.insertAdjacentHTML('afterbegin', `<span class="search-box__icon" aria-hidden="true">${UI.icon('search', 18)}</span>`);
+  guideSlot.innerHTML = UI.callout({
+    variant: 'info',
+    title: '검색은 이름이 비슷한 메뉴를 찾는 기능입니다',
+    text: '알레르기 판정은 검색과 별개로, 메뉴에 연결된 성분 번호가 정확히 일치하는지로만 정합니다.',
+  });
 
   let index = null;
 
@@ -213,7 +312,7 @@
     // 검색 대상: 영양사 성분표의 학식 메뉴 전체 (weekly-menu.json이 올라오면 이번 주 메뉴로 교체 검토)
     dataDate = String(dietitian.generated_at || '').slice(0, 10);
     currentMenus = dietitian.menus.map((m) => buildMenu(index, m));
-    renderList(filterMenus(inputSlot.value));
+    refresh();
   }).catch(() => {
     resultsSlot.innerHTML = UI.callout({
       variant: 'warn',
