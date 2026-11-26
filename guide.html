@@ -11,13 +11,89 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/pages/settings.css">
-  <!-- 이 페이지 전용 CSS가 필요하면: <link rel="stylesheet" href="css/pages/guide.css"> -->
+  <!-- 자료 안내 화면 전용 CSS (이채은) -->
+  <link rel="stylesheet" href="css/pages/guide.css">
 </head>
 <body>
   <!-- 담당: 이채은 (자료 안내) -->
   <main class="page container" id="app">
     <div class="page-head">
       <h1 class="page-title">자료 안내</h1>
+      <p class="page-desc">SafeMeal이 보여주는 정보가 어디서 왔고, 표시가 무엇을 뜻하는지 정리했습니다.</p>
+    </div>
+
+    <!-- 경고 박스, 상태 목록, 알레르기 칩은 js/pages/guide.js가 채움 -->
+    <div class="guide">
+      <div id="guide-warning"></div>
+
+      <section class="guide-card" aria-labelledby="guide-status-title">
+        <h2 class="guide-card__title" id="guide-status-title">표시 상태 4가지</h2>
+        <ul class="status-list" id="guide-status-list"></ul>
+      </section>
+
+      <section class="guide-card" aria-labelledby="guide-source-title">
+        <h2 class="guide-card__title" id="guide-source-title">자료 출처</h2>
+        <table class="source-table">
+          <thead>
+            <tr>
+              <th scope="col">식당</th>
+              <th scope="col">자료</th>
+              <th scope="col">기간</th>
+              <th scope="col">신뢰 수준</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="식당">진선미관</td>
+              <td data-label="자료">조리계획서의 재료명을 보고 팀이 판정한 성분표</td>
+              <td data-label="기간">2026.10.19 ~ 11.4 · 중식·석식</td>
+              <td data-label="신뢰 수준">확정/포함 가능 구분 · 영양사 검토 전</td>
+            </tr>
+            <tr>
+              <td data-label="식당">신공학관</td>
+              <td data-label="자료">영양사 제공 알레르기 성분표 (2주치 + 일품 8종)</td>
+              <td data-label="기간">2026.10.26 ~ 11.6 · 중식</td>
+              <td data-label="신뢰 수준">일반 제품 기준 추정</td>
+            </tr>
+            <tr>
+              <td data-label="식당">공통</td>
+              <td data-label="자료">식약처 조리식품 레시피 DB (Open API)</td>
+              <td data-label="기간">매주 월요일 자동 갱신</td>
+              <td data-label="신뢰 수준">표준 레시피 기준 추정 · 학식 레시피와 다를 수 있음</td>
+            </tr>
+            <tr>
+              <td data-label="식당">공통</td>
+              <td data-label="자료">이화여대 홈페이지 주간 식단 (메뉴명)</td>
+              <td data-label="기간">위 기간</td>
+              <td data-label="신뢰 수준">메뉴명 표기 기준</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="guide-card" aria-labelledby="guide-rule-title">
+        <h2 class="guide-card__title" id="guide-rule-title">판정 기준</h2>
+        <p class="guide-card__text">
+          식품의약품안전처 「식품 등의 표시기준」 알레르기 유발물질 표시 대상 19종을 사용합니다.
+          들깨·참깨·생선·보리처럼 19종에 포함되지 않는 성분은 메뉴 상세에 ‘참고’로만 적습니다.
+        </p>
+        <div class="cluster allergen-chips" id="guide-allergens"></div>
+      </section>
+
+      <section class="guide-card" aria-labelledby="guide-oss-title">
+        <h2 class="guide-card__title" id="guide-oss-title">오픈소스</h2>
+        <dl class="oss-list">
+          <div class="oss-list__row">
+            <dt>화면</dt>
+            <dd>Day.js 1.11.13 (MIT) · Lucide Icons (ISC) · Noto Sans KR 글꼴 (SIL OFL 1.1)</dd>
+          </div>
+          <div class="oss-list__row">
+            <dt>데이터 처리</dt>
+            <dd>openpyxl (MIT) · GitHub Actions actions/checkout, actions/setup-python (MIT)</dd>
+          </div>
+        </dl>
+        <p class="guide-card__text oss-list__note">라이선스 전문과 버전은 GitHub 저장소 README에 있습니다.</p>
+      </section>
     </div>
   </main>
 
@@ -26,6 +102,7 @@
   <script src="js/ui.js"></script>
   <script>UI.mountLayout({ active: 'guide' });</script>
   <script src="js/pages/settings.js"></script>
-  <!-- 이 페이지 전용 JS: <script src="js/pages/guide.js"></script> -->
+  <!-- 자료 안내 화면 전용 JS (이채은) -->
+  <script src="js/pages/guide.js"></script>
 </body>
 </html>
