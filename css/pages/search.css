@@ -1,0 +1,5 @@
+/*
+ * 메뉴 검색·상세 화면 (Figma 05, 06) 전용 스타일
+ * 담당: 장은서
+ * 규칙: 색은 hex 대신 css/tokens.css 의 토큰 사용 (예: var(--color-brand))
+ */
