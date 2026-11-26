@@ -20,7 +20,7 @@
   // ---- 메모장: 지금 사용자가 무엇을 골랐는지 기억 ----
   const state = {
     cafeteria: 'engineering',  // 처음엔 신공학관 (진선미관은 준비 중)
-    date: null,                // 맨 아래 [처음 한 번]에서 getDefaultDate()로 채움 (메뉴판을 봐야 해서)
+    date: null,    // 기본 날짜는 메뉴 자료를 읽은 뒤 아래에서 지정
   };
 
   // 이번 주 메뉴 mock (채은님 weekly-menu.json 형식과 같게)
@@ -38,8 +38,26 @@
     ],
   };
 
-  // 내 알레르기 mock (서진님 localStorage 형식이 정해지면 교체)
-  const MY_ALLERGIES = ['대두', '우유'];
+  // 설정 패널에서 저장한 알레르기 번호를 이름으로 변환
+  function getMyAllergies() {
+    try {
+      const ids = JSON.parse(
+        localStorage.getItem('safemeal.allergenIds')
+      );
+
+      if (!Array.isArray(ids)) return [];
+
+      return SM.ALLERGENS
+        .filter(function (allergen) {
+          return ids.includes(allergen.id);
+        })
+        .map(function (allergen) {
+          return allergen.name;
+        });
+    } catch (error) {
+      return [];
+    }
+  }
 
   // 번호(1~19) → { no, name } 모양으로 바꿔 주는 도우미
   function toAllergen(no) {
@@ -143,9 +161,9 @@
   // ================= 날짜 계산 (Day.js) =================
 
   // [날짜 1] 처음 보여 줄 날짜
-  //  ① 오늘 (토요일·일요일이면 다음 월요일)
-  //  ② 그날 메뉴가 없으면 → 자료가 있는 날 중 가장 가까운 날
-  //  ③ 자료가 하나도 없으면 → ①의 날짜 그대로
+  // ① 오늘 (토요일·일요일이면 다음 월요일)
+  // ② 그날 메뉴가 없으면 자료가 있는 날 중 가장 가까운 날
+  // ③ 자료가 하나도 없으면 ①의 날짜 그대로
   function getDefaultDate() {
     let today = dayjs().startOf('day');
     if (today.day() === 6) today = today.add(2, 'day');
@@ -235,14 +253,18 @@
 
   // [메뉴 3] 메뉴 이름 하나 → UI.menuItem이 원하는 모양으로 바꾸기
   function toMenuItem(menuName, index) {
-    const result = mockFind(menuName);                   // 찾기 기계
-    const check = mockCheckMenu(result, MY_ALLERGIES);   // 비교 기계
+    const result = mockFind(menuName);
+    const myAllergies = getMyAllergies();
+    const check = mockCheckMenu(result, myAllergies);
+
     return {
-      id: state.date + '-' + index,                      // 메뉴 구분 번호 (상세 화면 연결용, 장은서님과 맞출 예정)
-      name: menuName,                                    // "제육볶음"
-      desc: buildDesc(result),                           // 설명줄
-      status: LEVEL_TO_STATUS[check.level],              // 스티커 종류
-      statusDetail: check.hits.map((a) => a.name).join(', '), // 스티커 옆 "대두"
+      id: state.date + '-' + index,
+      name: menuName,
+      desc: buildDesc(result),
+      status: LEVEL_TO_STATUS[check.level],
+      statusDetail: check.hits.map(function (allergen) {
+        return allergen.name;
+      }).join(', ')
     };
   }
 
@@ -271,16 +293,78 @@
   }
 
   // [그리기 3] 메뉴 영역: 범례 + 끼니 카드 (Figma 03)
+  function renderUnconfiguredMenu(menuName, index) {
+    const result = mockFind(menuName);
+    const allergenNumbers = new Set(
+      result.allergens.concat(result.possibleFromName).map(function (allergen) {
+        return allergen.no;
+      })
+    );
+
+    const informationMissing =
+      result.status === 'needs_check' ||
+      result.status === 'none_estimated';
+
+    const badgeText = informationMissing || allergenNumbers.size === 0
+      ? '정보 부족'
+      : '성분 ' + allergenNumbers.size + '종';
+
+    const id = state.date + '-' + index;
+
+    return `
+      <button
+        type="button"
+        class="menu-item"
+        data-menu-id="${UI.esc(id)}"
+      >
+        <span class="menu-item__text">
+          <span class="menu-item__name">${UI.esc(menuName)}</span>
+          <span class="menu-item__desc">
+            ${UI.esc(buildDesc(result))}
+          </span>
+        </span>
+        <span class="settings-ingredient-badge">
+          ${UI.esc(badgeText)}
+        </span>
+        ${UI.icon('chevron-right', 16, 'menu-item__chevron')}
+      </button>
+    `;
+  }
   function renderMenus() {
-    const day = MOCK_WEEKLY.days.find((d) => d.date === state.date); // 고른 날짜의 메뉴판 한 줄
-    const items = day.menus.map(toMenuItem);                         // 메뉴 이름들 → 메뉴 한 줄 모양들
+    const day = MOCK_WEEKLY.days.find(function (day) {
+      return day.date === state.date;
+    });
+
+    if (getMyAllergies().length === 0) {
+      return `
+        <div class="meal-grid">
+          <section class="meal-card" aria-label="${UI.esc(day.meal)}">
+            <div class="meal-card__head">
+              <h2 class="meal-card__title">${UI.esc(day.meal)}</h2>
+            </div>
+
+            <p class="settings-menu-guide">
+              설정 전에는 성분 번호를 보여드려요.
+              내 알레르기를 설정하면 메뉴별 일치 여부를 확인할 수 있어요.
+            </p>
+
+            <div class="meal-card__list">
+              ${day.menus.map(renderUnconfiguredMenu).join('')}
+            </div>
+          </section>
+        </div>
+      `;
+    }
+
+    const items = day.menus.map(toMenuItem);
+
     return `
       <div class="menu-legend">${UI.statusLegend()}</div>
       <div class="meal-grid">
         ${UI.mealCard({ title: day.meal, items: items })}
-      </div>`;
+      </div>
+    `;
   }
-
   // [빈 상태 틀] 점선 박스 (Figma 04). 공통 컴포넌트에 없어서 직접 만듦
   // textHtml은 내가 만든 문장만 넣기 (메뉴 이름 같은 외부 글자는 UI.esc 거쳐서)
   function emptyState({ icon, title, textHtml, actions, hint }) {
@@ -339,6 +423,24 @@
 
   // [그리기 6] 본문: 상황에 따라 세 갈래 중 하나
   function renderBody() {
+    const notice = document.getElementById('allergy-settings-notice');
+
+    notice.innerHTML = getMyAllergies().length
+      ? ''
+      : UI.callout({
+          variant: 'brand',
+          title: '내 알레르기를 설정하면 메뉴마다 포함 여부를 알려드려요',
+          text:
+            '식약처 표시 대상 19종 중에서 고르면 됩니다. ' +
+            '로그인 없이 이 기기 브라우저에만 저장됩니다.',
+          action: UI.button({
+            label: '알레르기 설정하기',
+            variant: 'primary',
+            icon: 'sliders',
+            attrs: { 'data-open-settings': true }
+          })
+        });
+
     if (state.cafeteria !== 'engineering') {
       bodySlot.innerHTML = renderPreparing();
     } else if (hasMenuOn(state.date)) {
@@ -387,7 +489,10 @@
     }
   });
 
-  // [처음 한 번] 페이지가 열리면 기본 날짜 정하고 그리기
+  document.addEventListener('sm:allergens-changed', function () {
+    renderBody();
+  });
+  // [처음 한 번] 기본 날짜를 정하고 화면 그리기
   state.date = getDefaultDate();
   renderCafeteria();
   renderDates();
