@@ -2,11 +2,13 @@
  * 식단 목록 화면 (Figma 03) + 자료 없음 화면 (Figma 04) 전용 스타일
  * 담당: 이수빈
  * 규칙: 색은 hex 대신 css/tokens.css 의 토큰 사용 (예: var(--color-brand))
+ * 단위: 글자 크기·주요 간격은 rem (px ÷ 16), 줄 높이는 단위 없는 숫자.
+ *       테두리·아이콘 상자·최대 폭·미디어 쿼리 기준은 px 그대로.
  */
 
 /* 식당 선택 버튼과 아래 날짜 제목 사이 간격 (Figma 03: 12px) */
 .menu-cafeteria {
-  margin-bottom: 12px;
+  margin-bottom: 0.75rem;  /* 12px */
 }
 
 /* 제목 줄: 왼쪽 날짜 제목, 오른쪽 날짜 띠 (좁은 화면에선 아래로 줄바꿈) */
@@ -15,31 +17,31 @@
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-end;
-  gap: 16px;
+  gap: 1rem;               /* 16px */
 }
 
 /* "11월 20일 (금)" 옆에 작은 글씨 "2026년 11월 16일 주" */
 .menu-head__title {
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 0.5rem;             /* 8px */
 }
 
 .menu-head__week {
-  font-size: 14px;
-  line-height: 21px;
+  font-size: 0.875rem;     /* 14px */
+  line-height: 1.5;        /* 21px */
   color: var(--color-text-3);
 }
 
 /* 범례(포함 / 포함 가능 / …)와 아래 카드 사이 간격 (Figma 03: 24px) */
 .menu-legend {
-  margin-bottom: 24px;
+  margin-bottom: 1.5rem;   /* 24px */
 }
 
 /* 끼니 카드 상자: 신공학관은 카드가 1개라 1열 (공통 .meal-grid는 2열이라 반쪽만 차지했음) */
 .menu-meals {
   display: grid;
-  gap: 1rem;
+  gap: 1rem;               /* 16px */
 }
 
 /* ---------- 빈 상태 점선 박스 (Figma 04) ---------- */
@@ -47,7 +49,7 @@
   display: flex;
   flex-direction: column;   /* 위에서 아래로 쌓기 */
   align-items: center;      /* 가운데 정렬 */
-  padding: 64px 24px;
+  padding: 4rem 1.5rem;     /* 64px 24px */
   border: 1px dashed var(--color-border-strong);
   border-radius: var(--radius-2xl);
   background: var(--color-surface);
@@ -66,17 +68,17 @@
 }
 
 .menu-empty__title {
-  margin-top: 14px;
-  font-size: 22px;
-  line-height: 33px;
+  margin-top: 0.875rem;    /* 14px */
+  font-size: 1.375rem;     /* 22px */
+  line-height: 1.5;        /* 33px */
   font-weight: 700;
 }
 
 .menu-empty__text {
   max-width: 522px;
-  margin-top: 16px;
-  font-size: 15px;
-  line-height: 22.5px;
+  margin-top: 1rem;        /* 16px */
+  font-size: 0.9375rem;    /* 15px */
+  line-height: 1.5;        /* 22.5px */
   color: var(--color-text-2);
   word-break: keep-all; /* 한국어를 단어 중간에서 자르지 않기 */
 }
@@ -85,14 +87,14 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 8px;
-  margin-top: 24px;
+  gap: 0.5rem;             /* 8px */
+  margin-top: 1.5rem;      /* 24px */
 }
 
 .menu-empty__hint {
-  margin-top: 16px;
-  font-size: 13px;
-  line-height: 19.5px;
+  margin-top: 1rem;        /* 16px */
+  font-size: 0.8125rem;    /* 13px */
+  line-height: 1.5;        /* 19.5px */
   color: var(--color-text-3);
 }
 
