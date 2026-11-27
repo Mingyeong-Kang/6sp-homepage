@@ -110,10 +110,13 @@
   // 식당 칩: 검색어에 맞는 메뉴의 식당별 개수를 같이 보여 줌
   function renderChips(matched) {
     const options = [{ id: 'all', name: '전체' }, ...SM.CAFETERIAS];
+    // innerHTML로 다시 그리면 키보드 포커스가 사라지므로, 그리기 전에 포커스 있던 칩을 기억했다가 돌려 줌
+    const focused = chipsSlot.contains(document.activeElement) ? document.activeElement.dataset.cafeteria : null;
     chipsSlot.innerHTML = options.map((c) => {
       const count = c.id === 'all' ? matched.length : matched.filter((m) => m.cafeteria === c.id).length;
       return `<button type="button" class="search-chip" data-cafeteria="${UI.esc(c.id)}" aria-pressed="${c.id === cafeteria}">${UI.esc(c.name)} <span class="search-chip__count">${count}</span></button>`;
     }).join('');
+    if (focused) chipsSlot.querySelector(`[data-cafeteria="${focused}"]`)?.focus();
   }
 
   // 검색어 → 식당 칩 → 목록 순서로 한 번에 다시 그리기
@@ -303,10 +306,16 @@
 
   let index = null;
 
+  // 404 같은 서버 오류도 실패로 처리 (r.ok 확인 없이 json()을 부르면 오류 원인이 가려짐)
+  const getJson = (url) => fetch(url).then((r) => {
+    if (!r.ok) throw new Error(`${url} (${r.status})`);
+    return r.json();
+  });
+
   Promise.all([
-    fetch('data/dietitian-allergens.json').then((r) => r.json()),
-    fetch('data/recipe-allergens.min.json').then((r) => r.json()),
-    fetch('data/allergen_rules.json').then((r) => r.json()),
+    getJson('data/dietitian-allergens.json'),
+    getJson('data/recipe-allergens.min.json'),
+    getJson('data/allergen_rules.json'),
   ]).then(([dietitian, recipes, rules]) => {
     index = createAllergenIndex(dietitian, recipes, rules);
     // 검색 대상: 영양사 성분표의 학식 메뉴 전체 (weekly-menu.json이 올라오면 이번 주 메뉴로 교체 검토)
@@ -317,7 +326,7 @@
     resultsSlot.innerHTML = UI.callout({
       variant: 'warn',
       title: '자료를 불러오지 못했어요',
-      text: '파일을 더블클릭해서 연 경우 자료를 읽을 수 없어요. VS Code의 Live Server로 열어 주세요.',
+      text: '잠시 후 다시 시도해 주세요. (로컬에서는 파일을 더블클릭하지 말고 Live Server로 열어 주세요)',
     });
   });
 })();
