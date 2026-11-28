@@ -1,218 +1,134 @@
 # Ewha SafeMeal
 
-A campus dining information website that helps Ewha Womans University students explore meals based on their allergen preferences and dietary needs.
+Ewha SafeMeal is a static website that helps Ewha Womans University students check allergen information for campus meals. Students can select from 19 allergen categories to see how each dish matches their preferences.
 
 Developed by **Team 6sp** for the **Open Software Platform** course.
 
-> Project status: Under development. Features described below represent the planned MVP unless otherwise stated.
+> The MVP is in development. The menu page uses sample menus and test allergen results for the New Engineering Building cafeteria. Do not use this preview to make meal decisions.
 
-## Overview
+## Implementation status
 
-Campus menus are available online, but detailed ingredient and allergen information can require additional inquiries.
+| Feature | Status | Details |
+| --- | --- | --- |
+| Shared responsive UI | Implemented | Desktop header and footer, mobile navigation, cards, badges, and dialogs |
+| Allergen preferences | Implemented | Select, clear, and save preferences in the current browser. Saved choices appear in the header and update the menu badges. |
+| Cafeteria and date selection | Partially implemented | Browse sample lunches, move between weeks, and see empty states for dates without data or for Jinseonmi-gwan. |
+| Personalized allergen badges | Partially implemented | The menu page compares saved preferences with test data. Integration with the JSON datasets is pending. |
+| Allergen lookup and data generation | Implemented | Lookup module, dietitian spreadsheet import, and MFDS recipe data generation |
+| Automated recipe updates | Implemented | GitHub Actions is scheduled to run every Monday at 03:00 KST and opens or updates a pull request when recipe data changes. |
+| Menu search and details | In progress | The search page provides the shared layout. |
+| Data guide | In progress | The guide page provides the shared layout. |
 
-During our initial research, obtaining allergen information involved reviewing the university website, making a phone inquiry, visiting cafeteria nutritionists, and receiving files by email.
+Preferences are stored without an account as an array of allergen IDs under `safemeal.allergenIds` in browser local storage.
 
-Ewha SafeMeal aims to bring available meal information, sources, and verification status together in one place.
+## Allergen data
 
-### Target Users
+The lookup module prioritizes the New Engineering Building cafeteria dietitian's allergen table, then looks for matching or similar recipes from the Ministry of Food and Drug Safety (MFDS). It can fall back to keyword hints from dish names. The module returns the source and confidence of the result. The menu page currently uses its own sample data.
 
-- Primary: Ewha students with food allergies or dietary restrictions.
-- Secondary: Students interested in additional dietary preferences or available nutritional information.
-
-## Planned MVP Features
-
-- Browse meal records by cafeteria and date.
-- Select, save, and clear personal allergen preferences.
-- Display available allergen information and its verification status.
-- Highlight allergens matching the user's saved preferences.
-- Clearly identify missing, estimated, or unverified information.
-- View meal details, information sources, and relevant dates.
-- Search meals and filter results based on available allergen information.
-
-Preferences are planned to be stored in the current browser without requiring an account.
-
-### Additional Features Under Consideration
-
-- Additional dietary preferences.
-- Comparison of available calorie and protein information.
-- MFDS API integration.
-- Support for additional cafeterias.
-
-These features depend on data availability and development time.
-
-## User Flow
-
-1. Select allergen preferences, if needed.
-2. Choose a cafeteria and date.
-3. Browse meals and review their status labels.
-4. Search or apply filters.
-5. Open a meal to review available information and sources.
-6. Confirm uncertain information with cafeteria staff when necessary.
-
-When no menu data is available, users will be guided to select another date or search by dish name.
-
-## Data Sources and Reliability
-
-### Collected Cafeteria Materials
-
-Our initial research collected materials directly from nutritionists at:
-
-| Cafeteria | Collected Materials |
+| File | Purpose |
 | --- | --- |
-| Jinseonmi-gwan | Ingredient lists and cooking plans |
-| New Engineering Building | Representative and dated allergen tables, including product-check notes |
+| `data/dietitian-allergens.json` | Allergen records converted from the cafeteria dietitian's spreadsheets |
+| `data/recipe-allergens.json` | Full MFDS recipe dataset with ingredient and allergen details |
+| `data/recipe-allergens.min.json` | Compact recipe dataset for browser lookup |
+| `data/allergen_rules.json` | Keyword and exclusion rules for allergen detection |
+| `js/lookup.js` | Dish-name normalization, source matching, and comparison with saved preferences |
 
-Team-prepared classifications will be distinguished from information supplied by cafeteria nutritionists.
+### Status labels
 
-### General Reference Data
-
-Following proposal feedback, the team is investigating MFDS food databases and general recipe references as supplementary sources.
-
-A general recipe may differ from the recipe used by a cafeteria. Any information derived from these references must therefore be labeled as an estimate rather than cafeteria-confirmed information.
-
-MFDS API integration is under investigation and is not yet confirmed as an implemented feature.
-
-### Information Labels
-
-The interface is planned to distinguish:
-
-- Information provided by cafeteria nutritionists.
-- Team-derived classifications awaiting review.
-- Estimates based on general recipe references.
-- Missing or insufficient information.
-
-Source details and relevant dates will be displayed when available.
-
-Warning colors will be accompanied by text labels so that meaning does not depend on color alone.
-
-### Limitations
-
-- Missing allergen information does not mean that a meal is allergen-free.
-- General recipe estimates do not confirm the ingredients of a specific cafeteria meal.
-- The service does not guarantee that a meal is safe for an individual user.
-- Halal, vegan, or other dietary suitability will not be confirmed without sufficient evidence.
-- Users should contact cafeteria staff or nutritionists for confirmation when information is uncertain.
-- Real-time menu updates are outside the initial implementation plan.
-
-The first demonstration will focus on one cafeteria. The demonstration location and data update responsibilities will be finalized by the team.
-
-## Technical Plan
-
-| Technology | Planned Use |
+| Label | Meaning |
 | --- | --- |
-| HTML | Page structure |
-| CSS | Shared styling and responsive layouts |
-| JavaScript | User interactions, filtering, and data rendering |
-| JSON | Structured meal records and source metadata |
-| Browser local storage | Saved allergen preferences |
-| Git and GitHub | Version control and collaboration |
-| GitHub Pages | Planned static website deployment |
+| Contains | The result lists an allergen that matches a saved preference. Check the source to see whether the result is an estimate. |
+| May contain | The available information suggests a possible match. |
+| Insufficient information | The available information is missing or too uncertain to determine a match. |
+| No known match | The available information shows no match. This label does not establish that the dish is safe. |
 
-The initial version is planned as a static website without a dedicated backend server.
+Dietitian records cover primary ingredients and may omit components of processed foods, sauces, or seasonings. Standard recipes and dish-name estimates can differ from what a cafeteria serves. Confirm ingredients and possible cross-contact with cafeteria staff or the dietitian before relying on allergen information.
 
-### Data Workflow
+## Run locally
 
-1. Collect cafeteria materials and relevant reference data.
-2. Record sources, dates, and verification status.
-3. Review and organize records into JSON.
-4. Display records with appropriate labels and warnings.
-5. Update records as new information becomes available.
+From the repository root, start a static file server:
 
-## Accessibility and Quality Goals
+```sh
+python -m http.server 8000
+```
 
-- Support mobile and desktop layouts.
-- Provide clear navigation and readable text.
-- Support keyboard interaction.
-- Use text labels alongside status colors.
-- Keep information sources and uncertainty visible.
-- Handle missing menu data and unverified allergen information clearly.
+Open `http://localhost:8000` for the menu or `http://localhost:8000/components.html` for the component preview. VS Code Live Server also works. The site requires no frontend build step. Use a local server when working with JSON requests, since browsers may block them when opening HTML files directly.
 
-## Team and Responsibilities
+## Update the datasets
 
-| Member | Responsibility |
+### MFDS recipe data
+
+Copy `.env.example` to `.env`, set `FOODSAFETY_API_KEY`, and run:
+
+```sh
+python scripts/build_recipes.py
+```
+
+The script preserves the existing output if the response is incomplete or the recipe count falls by more than 10%. The scheduled workflow uses the repository's `FOODSAFETY_API_KEY` Actions secret and submits changed data through the `bot/update-recipes` branch.
+
+### Dietitian data
+
+Place the approved spreadsheet in `data/source/` and list it first in `SOURCE_FILES` in `scripts/build_dietitian.py`. Confirm permission before publishing source spreadsheets.
+
+```sh
+python -m pip install openpyxl
+python scripts/build_dietitian.py
+```
+
+See the [data guide](docs/data.md) for details on dataset generation and lookup rules.
+
+## Project structure
+
+| Path | Purpose |
+| --- | --- |
+| `index.html` | Menu page and allergen preferences |
+| `search.html` | Menu search and details page scaffold |
+| `guide.html` | Data guide page scaffold |
+| `components.html` | Shared component preview |
+| `css/` | Design tokens, shared styles, and page-specific styles |
+| `js/` | Shared UI, allergen lookup, and page scripts |
+| `data/` | Source spreadsheets and generated datasets |
+| `scripts/` | Python data generation scripts |
+| `docs/` | Component and data documentation |
+| `.github/workflows/` | Scheduled recipe update workflow |
+
+See the [shared component guide](docs/components.md) for UI conventions.
+
+## Technology and dependencies
+
+The frontend uses HTML, CSS, JavaScript, JSON, and browser local storage. Python generates the datasets, and GitHub Actions handles scheduled recipe updates. GitHub Pages deployment is planned.
+
+| Dependency | Purpose | License |
+| --- | --- | --- |
+| [Day.js](https://day.js.org/) 1.11.13 | Date and week calculations, with Korean locale support | MIT |
+| [Lucide](https://lucide.dev/) | SVG interface icons | ISC |
+| [Noto Sans KR](https://fonts.google.com/noto/specimen/Noto+Sans+KR) | Web font served through Google Fonts | SIL Open Font License 1.1 |
+| [openpyxl](https://openpyxl.readthedocs.io/) | Reading dietitian spreadsheets | MIT |
+
+## Team
+
+| Member | Responsibilities |
 | --- | --- |
 | Mingyeong Kang | Figma design, shared UI components, and responsive styling |
-| Seojin Park | Allergen settings, preference interactions, and local storage |
-| Soobin Lee | Cafeteria menu display, status badges, and unavailable-data states |
-| Eunseo Jang | Meal details, search functionality, and MFDS API investigation |
-| Chaeeun Lee | JSON data organization, source information, and verification metadata |
+| Seojin Park | Allergen preferences and local storage |
+| Soobin Lee | Menu page, status badges, and empty states |
+| Eunseo Jang | Menu details, search, and MFDS API research |
+| Chaeeun Lee | JSON datasets, source information, and verification metadata |
 | Jeonghyeon Park | GitHub integration, QA coordination, documentation, and presentation preparation |
 
-## Collaboration Workflow
+## Contributing
 
-1. Start from the latest `main`.
-2. Work in the assigned feature or documentation branch.
-3. Commit related changes with a clear message.
-4. Open a pull request targeting `main`.
-5. Describe the changes, testing performed, and remaining work.
-6. Complete the reviews required by the repository rules.
-7. Merge after review and integration checks.
+Start from the latest `main` on your assigned branch. Open a pull request targeting `main` and use the PR template to describe your changes, affected files, and verification steps. Coordinate shared-file changes with the responsible teammate and complete the required reviews before merging.
 
-### Working Branches
+## Next steps
 
-| Branch | Purpose |
-| --- | --- |
-| `main` | Integrated project code |
-| `feat/ui` | Shared UI and responsive styling |
-| `feat/allergy` | Allergen settings and saved preferences |
-| `feat/menu` | Menu listing and status display |
-| `feat/detail-search` | Meal details and search |
-| `feat/data` | Meal data and source information |
-| `docs/guide` | Documentation and collaboration guidance |
-
-Coordinate with the relevant team members before modifying shared files.
-
-## Development Schedule
-
-| Period | Planned Milestone |
-| --- | --- |
-| November 12–18, 2026 | Initial implementation of assigned screens and collaboration setup |
-| November 19–25, 2026 | Complete and integrate must-have MVP features |
-| November 26, 2026 | Complete critical fixes and deploy the stable MVP |
-| November 27–December 3, 2026 | Feature freeze and exam preparation |
-| December 4–9, 2026 | Prepare the presentation, demonstration, script, and Q&A |
-| December 10, 2026 | Final presentation |
-
-## Testing Plan
-
-Testing will cover:
-
-- Cafeteria and date selection.
-- Menu rendering and meal detail navigation.
-- Saving, restoring, and clearing allergen preferences.
-- Allergen matching and filter behavior.
-- Missing menu data.
-- Missing, estimated, and unverified allergen information.
-- Source and date consistency.
-- Responsive layouts and keyboard navigation.
-
-Each contributor will test their own changes before opening a pull request. Integration testing will be coordinated before deployment.
-
-## Open-Source Usage
-
-Open-source libraries will be selected based on their relevance to the project.
-
-For each adopted library, this documentation will record:
-
-- Project name and source link.
-- Purpose and integration location.
-- Version used.
-- License and required attribution.
-
-No specific third-party library is confirmed in this initial README.
-
-## Running the Project
-
-Setup and execution instructions will be added once the initial implementation and directory structure are finalized.
+- Replace the sample cafeteria menus with weekly menu data and connect `js/lookup.js` to the menu page.
+- Implement menu search, dish details, and the data guide.
+- Test the integrated site and deploy to GitHub Pages.
 
 ## References
 
-- Ewha campus dining information:
-  https://www.ewha.ac.kr/ewha/life/restaurant.do
-- MFDS Food Labeling Standards:
-  https://www.mfds.go.kr/brd/m_207/view.do?seq=14028
-- Public Data Portal API reference:
-  https://www.data.go.kr/data/15127578/openapi.do
-- Cafeteria materials supplied directly by nutritionists.
-
-Reference sources do not necessarily represent completed integrations.
+- [Ewha Womans University campus dining information](https://www.ewha.ac.kr/ewha/life/restaurant.do)
+- [MFDS food labeling standards](https://www.mfds.go.kr/brd/m_207/view.do?seq=14028)
+- [Public Data Portal recipe API](https://www.data.go.kr/data/15127578/openapi.do)
+- Allergen tables supplied by the New Engineering Building cafeteria dietitian
