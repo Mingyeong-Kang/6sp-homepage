@@ -1,0 +1,175 @@
+/*
+ * 자료 안내 화면 (Figma 07) 전용 스타일
+ * 담당: 이채은
+ * 규칙: 색은 hex 대신 css/tokens.css 의 토큰 사용
+ */
+
+.guide {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ---------- 카드 ---------- */
+.guide-card {
+  padding: 1.75rem 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface);
+}
+
+.guide-card__title {
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  font-weight: 700;
+}
+
+.guide-card__text {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--color-text-2);
+  word-break: keep-all;
+}
+
+/* ---------- 표시 상태 4가지 ---------- */
+.status-list__row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--color-divider);
+}
+
+.status-list__badge { flex: 0 0 10rem; }
+
+.status-list__desc {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--color-text-2);
+  word-break: keep-all;
+}
+
+/* ---------- 자료 출처 ---------- */
+.source-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.source-table th {
+  padding: 0.75rem;
+  background: var(--color-bg);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text-3);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.source-table td {
+  padding: 0.875rem 0.75rem;
+  border-bottom: 1px solid var(--color-divider);
+  color: var(--color-text-2);
+  word-break: keep-all;
+  vertical-align: top;
+}
+
+.source-table td:first-child {
+  font-weight: 700;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+/* ---------- 판정 기준 ---------- */
+.allergen-chips {
+  --gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* ---------- 오픈소스 ---------- */
+.oss-list { margin: 0; }
+
+.oss-list__row {
+  display: grid;
+  grid-template-columns: 6rem 1fr;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.oss-list__row dt { font-weight: 700; color: var(--color-text); }
+.oss-list__row dd { margin: 0; color: var(--color-text-2); word-break: keep-all; }
+
+.oss-list__note { margin-top: 0.5rem; font-size: 0.8125rem; color: var(--color-text-3); }
+
+/* ---------- 넓은 화면 ---------- */
+@media (min-width: 1024px) {
+  .guide-card { padding: 2rem; }
+  .status-list__badge { flex-basis: 12rem; }
+}
+
+/* ---------- 휴대폰 ---------- */
+@media (max-width: 768px) {
+  .guide { gap: 1rem; }
+
+  .guide-card {
+    padding: 1.25rem 1rem;
+    border-radius: var(--radius-lg);
+  }
+
+  .guide-card__title { font-size: 1.0625rem; }
+
+  /* 배지 위, 설명 아래 */
+  .status-list__row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.875rem 0;
+  }
+  .status-list__badge { flex-basis: auto; }
+
+  /* 표를 행마다 카드처럼: 각 칸 앞에 data-label 표시 */
+  .source-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .source-table,
+  .source-table tbody,
+  .source-table tr,
+  .source-table td {
+    display: block;
+  }
+
+  .source-table tr {
+    padding: 0.875rem 0;
+    border-top: 1px solid var(--color-divider);
+  }
+  .source-table tr:first-child { border-top: 0; padding-top: 0; }
+
+  .source-table td {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: 0.5rem;
+    padding: 0.1875rem 0;
+    border: 0;
+  }
+
+  .source-table td::before {
+    content: attr(data-label);
+    font-size: 0.8125rem;
+    color: var(--color-text-3);
+  }
+
+  .source-table td:first-child { white-space: normal; }
+
+  .oss-list__row { grid-template-columns: 1fr; gap: 0.125rem; }
+}
