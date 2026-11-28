@@ -1,0 +1,96 @@
+/*
+ * 메뉴 검색·상세 화면 (Figma 05, 06) 전용 스타일
+ * 담당: 장은서
+ * 규칙: 색은 hex 대신 css/tokens.css 의 토큰 사용 (예: var(--color-brand))
+ */
+
+.search-box {
+  position: relative;
+  margin-top: 1rem;
+}
+
+.search-box__icon {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  color: var(--color-text-3);
+  pointer-events: none;
+}
+
+.search-box__input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.search-box__input:focus-visible {
+  outline: 3px solid var(--color-brand);
+  outline-offset: 2px;
+}
+
+.search-notice:not(:empty) {
+  margin-top: 1rem;
+}
+
+.search-results {
+  margin-top: 1rem;
+}
+
+.search-detail__heading {
+  margin-bottom: 0.25rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+.search-detail__empty {
+  font-size: 0.875rem;
+  color: var(--color-text-3);
+}
+
+.search-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-top: 0.75rem;
+}
+
+.search-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.search-chip {
+  padding: 0.3125rem 0.75rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text-2);
+}
+
+.search-chip[aria-pressed="true"] {
+  border-color: var(--color-brand);
+  background: var(--color-brand);
+  color: var(--color-surface);
+}
+
+.search-chip__count {
+  font-weight: 700;
+}
+
+.search-summary {
+  font-size: 0.875rem;
+  color: var(--color-text-2);
+}
+
+.search-guide {
+  margin-top: 1rem;
+}
